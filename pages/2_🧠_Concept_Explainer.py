@@ -6,6 +6,15 @@ from datetime import datetime
 
 import streamlit as st
 
+from shared.chat_store import (
+    MAX_SAVED_CHATS,
+    archive_list,
+    format_transcript,
+    load_chat,
+    on_first_message,
+    start_new_chat,
+    upsert_current_chat,
+)
 from shared.limits import (
     MAX_CONCEPT_CHARS,
     MAX_CONTEXT_TURNS,
@@ -30,6 +39,7 @@ from shared.ui import (
     ce_limits_caption,
     ce_topbar,
     ce_usage_strip,
+    ce_past_chats_panel,
     inject_ce_chat_layout,
     inject_material_theme,
     render_html,
@@ -46,18 +56,11 @@ AUDIENCES = (
 
 
 def _format_transcript(messages: list[dict[str, str]]) -> str:
-    lines = [
-        f"Concept Explainer — {datetime.now().isoformat(timespec='seconds')}",
-        "Abhishek Jain · iamabyjain.com",
-        f"Session tokens: {st.session_state.ce_input_tokens + st.session_state.ce_output_tokens:,}",
-        "=" * 60,
-        "",
-    ]
-    for msg in messages:
-        lines.append(f"[{msg['role'].upper()}]")
-        lines.append(msg["content"])
-        lines.append("")
-    return "\n".join(lines)
+    return format_transcript(
+        messages,
+        input_tokens=st.session_state.ce_input_tokens,
+        output_tokens=st.session_state.ce_output_tokens,
+    )
 
 
 def _user_turn_count() -> int:
@@ -137,6 +140,7 @@ def _reply(user_text: str, active_key: str) -> bool:
     audiences = _selected_audiences()
 
     if is_first:
+        on_first_message()
         st.session_state.ce_active_concept = text
         st.session_state.ce_active_audiences = audiences
         api_messages = [{"role": "user", "content": build_explain_prompt(text, audiences)}]
@@ -158,6 +162,7 @@ def _reply(user_text: str, active_key: str) -> bool:
     _record_usage(result.input_tokens, result.output_tokens)
     st.session_state.ce_messages.append({"role": "user", "content": text})
     st.session_state.ce_messages.append({"role": "assistant", "content": result.content})
+    upsert_current_chat()
     return True
 
 
@@ -180,6 +185,9 @@ _defaults = {
     "ce_input_tokens": 0,
     "ce_output_tokens": 0,
     "ce_request_count": 0,
+    "ce_chat_archive": [],
+    "ce_active_chat_id": None,
+    "ce_chat_started_at": None,
 }
 for _k, _v in _defaults.items():
     if _k not in st.session_state:
@@ -234,6 +242,38 @@ with st.sidebar:
     st.checkbox(AUDIENCES[1], key="ce_aud_expert")
     st.checkbox(AUDIENCES[2], key="ce_aud_tech")
 
+    section_label("Past chats")
+    saved = archive_list()
+    if not saved:
+        st.caption("No saved chats yet — start one below.")
+    else:
+        st.caption(f"{len(saved)} chat(s) this browser session")
+        for item in saved[:MAX_SAVED_CHATS]:
+            label = item.get("title", "Chat")
+            updated = item.get("updated_at", "")[:16].replace("T", " ")
+            turns = sum(1 for m in item.get("messages", []) if m.get("role") == "user")
+            is_active = item["id"] == st.session_state.get("ce_active_chat_id")
+            row1, row2 = st.columns([2, 1])
+            with row1:
+                btn_label = f"{'● ' if is_active else ''}{label}"
+                if st.button(btn_label, key=f"load_{item['id']}", use_container_width=True):
+                    load_chat(item["id"])
+                    st.rerun()
+            with row2:
+                st.download_button(
+                    "⬇",
+                    data=format_transcript(
+                        item["messages"],
+                        title=item.get("title", ""),
+                        input_tokens=int(item.get("input_tokens", 0)),
+                        output_tokens=int(item.get("output_tokens", 0)),
+                    ),
+                    file_name=f"chat_{item['id']}.txt",
+                    key=f"dl_{item['id']}",
+                    use_container_width=True,
+                )
+            st.caption(f"{updated} · {turns} turn(s)")
+
     section_label("Session use")
     total_tok = st.session_state.ce_input_tokens + st.session_state.ce_output_tokens
     st.metric("Tokens", f"{total_tok:,}")
@@ -256,11 +296,7 @@ with st.sidebar:
             use_container_width=True,
         )
     if st.button("New chat", use_container_width=True):
-        st.session_state.ce_messages = []
-        st.session_state.ce_active_concept = ""
-        st.session_state.ce_input_tokens = 0
-        st.session_state.ce_output_tokens = 0
-        st.session_state.ce_request_count = 0
+        start_new_chat()
         st.rerun()
 
     render_sidebar_minimal()
@@ -288,6 +324,18 @@ if st.session_state.ce_request_count > 0:
     )
 else:
     ce_limits_caption(MAX_TERMS, MAX_CONCEPT_CHARS, MAX_CONTEXT_TURNS)
+
+ce_past_chats_panel(archive_list(), st.session_state.get("ce_active_chat_id"))
+
+if st.session_state.ce_messages:
+    dl1, dl2 = st.columns([3, 1])
+    with dl2:
+        st.download_button(
+            "⬇ Download this chat",
+            data=_format_transcript(st.session_state.ce_messages),
+            file_name=f"chat_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+            use_container_width=True,
+        )
 
 render_html('<span class="ce-chat-workspace-marker"></span>')
 

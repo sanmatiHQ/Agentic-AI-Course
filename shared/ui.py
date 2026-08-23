@@ -557,6 +557,38 @@ def inject_material_theme() -> None:
         .ce-limits-caption {{
             font-size: 0.7rem; color: {C_ON_SURFACE_VARIANT}; margin: 0.35rem 0 0;
         }}
+        .ce-past-panel {{
+            background: rgba(255,255,255,0.78);
+            border: 1px solid {C_OUTLINE};
+            border-radius: 14px;
+            padding: 0.65rem 0.9rem;
+            margin: 0 0 0.85rem;
+        }}
+        .ce-past-label {{
+            font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em;
+            text-transform: uppercase; color: {C_ON_SURFACE_VARIANT};
+        }}
+        .ce-past-chips {{
+            display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.45rem;
+        }}
+        .ce-past-chip {{
+            font-size: 0.75rem; font-weight: 600; color: {C_ON_SURFACE};
+            background: {C_SURFACE_CONTAINER};
+            border: 1px solid {C_OUTLINE};
+            border-radius: 999px; padding: 0.25rem 0.65rem;
+        }}
+        .ce-past-chip-active {{
+            border-color: rgba(37,99,235,0.35);
+            background: rgba(37,99,235,0.08); color: {C_PRIMARY};
+        }}
+        .ce-past-chip em {{
+            font-style: normal; font-weight: 500; color: {C_ON_SURFACE_VARIANT};
+            font-size: 0.68rem; margin-left: 0.25rem;
+        }}
+        .ce-past-note {{
+            display: block; margin-top: 0.4rem;
+            font-size: 0.68rem; color: {C_ON_SURFACE_VARIANT};
+        }}
 
         div[data-testid="stVerticalBlockBorderWrapper"] .ce-panel-title {{
             margin-top: -0.25rem;
@@ -764,6 +796,31 @@ def ce_limits_caption(max_terms: int, max_chars: int, max_context: int) -> None:
     _render_html(
         f'<p class="ce-limits-caption">Limits: {max_terms} terms · {max_chars} chars · '
         f"last {max_context} follow-ups in context</p>"
+    )
+
+
+def ce_past_chats_panel(chats: list[dict], active_id: str | None) -> None:
+    """Visible past-chat list on the main canvas (browser session only)."""
+    if not chats:
+        return
+    rows = []
+    for item in chats[:8]:
+        title = html.escape(str(item.get("title", "Chat")))
+        updated = html.escape(str(item.get("updated_at", ""))[:16].replace("T", " "))
+        active = item.get("id") == active_id
+        dot = "● " if active else ""
+        rows.append(
+            f'<span class="ce-past-chip{" ce-past-chip-active" if active else ""}">'
+            f"{dot}{title} <em>{updated}</em></span>"
+        )
+    _render_html(
+        f"""
+        <div class="ce-past-panel bento-animate">
+            <span class="ce-past-label">Past chats ({len(chats)})</span>
+            <div class="ce-past-chips">{"".join(rows)}</div>
+            <span class="ce-past-note">Open or download any chat from the sidebar → Past chats</span>
+        </div>
+        """
     )
 
 
