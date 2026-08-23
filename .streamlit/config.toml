@@ -1,12 +1,10 @@
 # Agentic AI Course — Streamlit config (local + Community Cloud)
-# Deploy: streamlit_app.py · requirements.txt · this file
 
 [theme]
-# Google Material light — matches shared/ui.py
-primaryColor = "#1A73E8"
-backgroundColor = "#F8F9FA"
+primaryColor = "#2563EB"
+backgroundColor = "#EEF2FF"
 secondaryBackgroundColor = "#FFFFFF"
-textColor = "#1F1F1F"
+textColor = "#0F172A"
 font = "sans serif"
 
 [server]

@@ -1,4 +1,4 @@
-"""Material Design 3 — minimal bento layout & micro-interactions."""
+"""Brilliant portfolio UI — bento spatial layout, glass cards, micro-interactions."""
 
 from __future__ import annotations
 
@@ -9,17 +9,16 @@ import streamlit as st
 
 from shared.projects import Project, ShippedApp
 
-C_PRIMARY = "#1A73E8"
-C_PRIMARY_CONTAINER = "#D3E3FD"
-C_ON_PRIMARY = "#FFFFFF"
+# ── Design tokens ─────────────────────────────────────────────────────────────
+C_PRIMARY = "#2563EB"
+C_VIOLET = "#7C3AED"
+C_CYAN = "#06B6D4"
+C_ROSE = "#F43F5E"
+C_AMBER = "#F59E0B"
 C_SURFACE = "#FFFFFF"
-C_SURFACE_DIM = "#F8F9FA"
-C_SURFACE_CONTAINER = "#F0F4F9"
-C_ON_SURFACE = "#1F1F1F"
-C_ON_SURFACE_VARIANT = "#444746"
-C_OUTLINE_VARIANT = "#C4C7C5"
-C_YELLOW = "#F9AB00"
-C_TEAL = "#007B83"
+C_ON_SURFACE = "#0F172A"
+C_ON_SURFACE_VARIANT = "#475569"
+C_OUTLINE = "rgba(148, 163, 184, 0.35)"
 
 
 def _render_html(fragment: str) -> None:
@@ -34,229 +33,458 @@ def inject_material_theme() -> None:
     st.markdown(
         f"""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400;6..144,500;6..144;700&family=Roboto:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
 
         html, body, [class*="css"] {{
-            font-family: 'Google Sans Flex', 'Roboto', sans-serif !important;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+            -webkit-font-smoothing: antialiased;
         }}
 
+        /* ── Aurora mesh background ── */
         .stApp {{
-            background: linear-gradient(165deg, #EEF3FC 0%, #FAFAFA 50%, #FFF9F5 100%) !important;
+            background: #F0F4FF !important;
+            background-image:
+                radial-gradient(ellipse 80% 60% at 10% 0%, rgba(37,99,235,0.18) 0%, transparent 55%),
+                radial-gradient(ellipse 70% 50% at 90% 10%, rgba(124,58,237,0.16) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 45% at 50% 100%, rgba(6,182,212,0.12) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(244,63,94,0.08) 0%, transparent 50%),
+                linear-gradient(180deg, #EEF2FF 0%, #FAFAFF 40%, #FFF7ED 100%) !important;
             background-attachment: fixed !important;
         }}
         .block-container {{
-            padding-top: 1.25rem;
-            max-width: 980px;
+            padding-top: 1.5rem;
+            max-width: 1040px;
         }}
 
-        /* Sidebar — minimal */
+        /* ── Sidebar glass ── */
         section[data-testid="stSidebar"] {{
-            background: {C_SURFACE} !important;
-            border-right: 1px solid {C_OUTLINE_VARIANT} !important;
+            background: rgba(255,255,255,0.72) !important;
+            backdrop-filter: blur(20px) saturate(1.4) !important;
+            -webkit-backdrop-filter: blur(20px) saturate(1.4) !important;
+            border-right: 1px solid {C_OUTLINE} !important;
         }}
         [data-testid="stSidebarNav"] > ul > span,
         [data-testid="stSidebarNav"] > ul > small,
         [data-testid="stSidebarNav"] > ul > p {{ display: none !important; }}
 
         [data-testid="stSidebarNavLink"] {{
-            border-radius: 12px !important;
-            padding: 0.65rem 1rem !important;
-            margin: 0.12rem 0.5rem !important;
-            font-weight: 500 !important;
+            border-radius: 14px !important;
+            padding: 0.7rem 1rem !important;
+            margin: 0.15rem 0.55rem !important;
+            font-weight: 600 !important;
             font-size: 0.84rem !important;
-            transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease !important;
+            transition: all 0.22s cubic-bezier(0.2,0,0,1) !important;
         }}
         [data-testid="stSidebarNavLink"]:hover {{
-            background: {C_PRIMARY_CONTAINER} !important;
+            background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(124,58,237,0.1)) !important;
             color: {C_PRIMARY} !important;
-            transform: translateX(2px);
+            transform: translateX(3px);
+            box-shadow: 0 2px 8px rgba(37,99,235,0.1) !important;
         }}
         [data-testid="stSidebarNavLink"][aria-current="page"] {{
-            background: {C_PRIMARY_CONTAINER} !important;
+            background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.12)) !important;
             color: {C_PRIMARY} !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
+            box-shadow: inset 0 0 0 1px rgba(37,99,235,0.2) !important;
         }}
 
-        /* Bento + spatial layout */
+        /* ── Motion ── */
         .bento-animate {{
-            animation: bentoIn 0.45s cubic-bezier(0.2, 0, 0, 1) both;
+            animation: bentoIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
         }}
+        .bento-animate:nth-child(2) {{ animation-delay: 0.06s; }}
+        .bento-animate:nth-child(3) {{ animation-delay: 0.12s; }}
+        .bento-animate:nth-child(4) {{ animation-delay: 0.18s; }}
         @keyframes bentoIn {{
-            from {{ opacity: 0; transform: translateY(10px); }}
-            to {{ opacity: 1; transform: translateY(0); }}
+            from {{ opacity: 0; transform: translateY(16px) scale(0.98); }}
+            to {{ opacity: 1; transform: translateY(0) scale(1); }}
+        }}
+        @keyframes shimmer {{
+            0% {{ background-position: 200% center; }}
+            100% {{ background-position: -200% center; }}
+        }}
+        @keyframes float {{
+            0%, 100% {{ transform: translateY(0); }}
+            50% {{ transform: translateY(-4px); }}
         }}
 
+        /* ── Profile hero ── */
         .profile-hero {{
-            background: linear-gradient(135deg, #1A73E8, #6366F1);
-            border-radius: 24px;
-            padding: 2rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 8px 24px rgba(26,115,232,0.2);
+            position: relative;
+            background: linear-gradient(135deg, #1D4ED8 0%, #6366F1 35%, #7C3AED 70%, #0891B2 100%);
+            border-radius: 28px;
+            padding: 2.25rem 2.5rem;
+            margin-bottom: 1.25rem;
             color: #fff;
-            transition: box-shadow 0.3s ease;
+            overflow: hidden;
+            box-shadow:
+                0 20px 50px rgba(37,99,235,0.28),
+                0 0 0 1px rgba(255,255,255,0.15) inset;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
         }}
-        .profile-hero:hover {{ box-shadow: 0 12px 32px rgba(26,115,232,0.28); }}
+        .profile-hero::before {{
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12) 0%, transparent 35%);
+            pointer-events: none;
+        }}
+        .profile-hero::after {{
+            content: "";
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 60%; height: 200%;
+            background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 50%, transparent 60%);
+            animation: shimmer 8s linear infinite;
+            pointer-events: none;
+        }}
+        .profile-hero:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 28px 60px rgba(37,99,235,0.35);
+        }}
+        .profile-hero .hero-inner {{ position: relative; z-index: 1; }}
         .profile-hero .avatar {{
-            width: 64px; height: 64px; border-radius: 18px;
-            background: rgba(255,255,255,0.2);
+            width: 72px; height: 72px; border-radius: 22px;
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(8px);
+            border: 2px solid rgba(255,255,255,0.35);
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.75rem; margin-bottom: 0.85rem;
+            font-size: 2rem; margin-bottom: 1rem;
+            animation: float 4s ease-in-out infinite;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
         }}
-        .profile-hero h1 {{ font-size: 1.85rem; font-weight: 600; margin: 0 0 0.3rem; color: #fff !important; }}
-        .profile-hero .tagline {{ color: rgba(255,255,255,0.9); margin: 0; line-height: 1.5; font-size: 0.95rem; }}
+        .profile-hero h1 {{
+            font-size: 2.1rem; font-weight: 800; margin: 0 0 0.35rem;
+            color: #fff !important; letter-spacing: -0.02em;
+        }}
+        .profile-hero .tagline {{
+            color: rgba(255,255,255,0.92); margin: 0;
+            line-height: 1.55; font-size: 1rem; font-weight: 500;
+        }}
 
+        /* ── Page hero (Concept Explainer etc.) ── */
         .md-hero {{
-            background: {C_SURFACE};
-            border-radius: 20px;
-            padding: 1.5rem 1.75rem;
-            margin-bottom: 1rem;
-            border: 1px solid {C_OUTLINE_VARIANT};
-            box-shadow: 0 1px 2px rgba(60,64,67,0.05);
-            transition: box-shadow 0.25s ease, transform 0.25s ease;
+            position: relative;
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 1.75rem 2rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 8px 32px rgba(37,99,235,0.08), 0 1px 0 rgba(255,255,255,0.9) inset;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }}
-        .md-hero:hover {{ box-shadow: 0 4px 16px rgba(60,64,67,0.08); transform: translateY(-1px); }}
-        .md-hero h1 {{ font-size: 1.5rem; font-weight: 600; color: {C_ON_SURFACE} !important; margin: 0 0 0.35rem; }}
-        .md-hero p {{ color: {C_ON_SURFACE_VARIANT}; margin: 0; font-size: 0.9rem; line-height: 1.55; }}
+        .md-hero::before {{
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, {C_PRIMARY}, {C_VIOLET}, {C_CYAN});
+        }}
+        .md-hero:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 16px 40px rgba(37,99,235,0.12);
+        }}
+        .md-hero h1 {{
+            font-size: 1.65rem; font-weight: 800; color: {C_ON_SURFACE} !important;
+            margin: 0.5rem 0 0.4rem; letter-spacing: -0.02em;
+        }}
+        .md-hero p {{ color: {C_ON_SURFACE_VARIANT}; margin: 0; font-size: 0.95rem; line-height: 1.6; }}
 
+        /* ── Chips ── */
         .md-chip {{
-            display: inline-flex;
-            background: {C_PRIMARY_CONTAINER};
-            color: #174EA6;
+            display: inline-flex; align-items: center;
+            background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.08));
+            color: #1D4ED8;
+            border: 1px solid rgba(37,99,235,0.15);
             border-radius: 999px;
-            padding: 0.28rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin: 0.2rem 0.3rem 0.2rem 0;
-            transition: transform 0.15s ease;
+            padding: 0.32rem 0.85rem;
+            font-size: 0.75rem; font-weight: 600;
+            margin: 0.25rem 0.35rem 0.25rem 0;
+            transition: all 0.2s ease;
         }}
-        .md-chip:hover {{ transform: scale(1.03); }}
+        .md-chip:hover {{
+            transform: translateY(-1px) scale(1.04);
+            box-shadow: 0 4px 12px rgba(37,99,235,0.15);
+            background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(124,58,237,0.12));
+        }}
         .profile-hero .md-chip {{
-            background: rgba(255,255,255,0.2); color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.16); color: #fff;
+            border: 1px solid rgba(255,255,255,0.28);
+            backdrop-filter: blur(4px);
+        }}
+        .profile-hero .md-chip:hover {{
+            background: rgba(255,255,255,0.26);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
         }}
 
+        /* ── Intro strip ── */
+        .intro-strip {{
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(12px);
+            border: 1px solid {C_OUTLINE};
+            border-radius: 18px;
+            padding: 1.1rem 1.35rem;
+            margin: 0.75rem 0 1rem;
+            font-size: 0.925rem;
+            line-height: 1.65;
+            color: {C_ON_SURFACE_VARIANT};
+            box-shadow: 0 4px 16px rgba(15,23,42,0.04);
+        }}
+        .intro-strip strong {{ color: {C_ON_SURFACE}; font-weight: 700; }}
+
+        /* ── Bento metrics ── */
         .bento-metrics {{
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.75rem;
-            margin: 1rem 0;
+            gap: 0.85rem;
+            margin: 1.1rem 0 1.25rem;
         }}
         .bento-metric {{
-            background: {C_SURFACE};
-            border: 1px solid {C_OUTLINE_VARIANT};
-            border-radius: 16px;
-            padding: 1rem;
+            position: relative;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 20px;
+            padding: 1.15rem 1rem;
             text-align: center;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }}
-        .bento-metric:hover {{ transform: translateY(-2px); box-shadow: 0 4px 12px rgba(60,64,67,0.08); }}
-        .bento-metric .val {{ font-size: 1.4rem; font-weight: 600; color: {C_PRIMARY}; }}
-        .bento-metric .lbl {{ font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: {C_ON_SURFACE_VARIANT}; margin-top: 0.2rem; }}
-
-        .proj-card {{
-            background: {C_SURFACE};
-            border-radius: 18px;
-            margin-bottom: 0.85rem;
-            border: 1px solid {C_OUTLINE_VARIANT};
             overflow: hidden;
-            transition: transform 0.25s cubic-bezier(0.2,0,0,1), box-shadow 0.25s ease;
+            transition: all 0.28s cubic-bezier(0.2,0,0,1);
+            box-shadow: 0 4px 20px rgba(15,23,42,0.05);
+        }}
+        .bento-metric::before {{
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(124,58,237,0.06));
+        }}
+        .bento-metric:hover {{
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(37,99,235,0.12);
+        }}
+        .bento-metric:hover::before {{ opacity: 1; }}
+        .bento-metric .val {{
+            font-size: 1.75rem; font-weight: 800; letter-spacing: -0.03em;
+            background: linear-gradient(135deg, {C_PRIMARY}, {C_VIOLET});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }}
+        .bento-metric .lbl {{
+            font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em;
+            color: {C_ON_SURFACE_VARIANT}; margin-top: 0.25rem; font-weight: 600;
+            position: relative;
+        }}
+
+        /* ── Project cards ── */
+        .proj-card {{
+            position: relative;
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(14px);
+            border-radius: 22px;
+            margin-bottom: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.95);
+            overflow: hidden;
+            transition: all 0.32s cubic-bezier(0.2,0,0,1);
+            box-shadow: 0 4px 24px rgba(15,23,42,0.06);
         }}
         .proj-card:hover {{
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(60,64,67,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 48px rgba(15,23,42,0.1);
         }}
-        .proj-accent {{ height: 4px; }}
-        .proj-body {{ padding: 1.15rem 1.25rem 1.25rem; }}
-        .proj-head {{ display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap; }}
-        .proj-icon {{ font-size: 1.35rem; }}
-        .proj-title {{ font-size: 1rem; font-weight: 600; color: {C_ON_SURFACE}; margin: 0; flex: 1; }}
-        .proj-status {{ font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; }}
-        .proj-gist {{ color: {C_ON_SURFACE_VARIANT}; font-size: 0.875rem; line-height: 1.6; margin: 0 0 0.75rem; }}
+        .proj-accent {{
+            height: 5px;
+            background: var(--proj-accent, {C_PRIMARY}) !important;
+        }}
+        .proj-body {{ padding: 1.25rem 1.35rem 1.35rem; }}
+        .proj-head {{
+            display: flex; align-items: center; gap: 0.65rem;
+            margin-bottom: 0.65rem; flex-wrap: wrap;
+        }}
+        .proj-icon-wrap {{
+            width: 44px; height: 44px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.35rem; flex-shrink: 0;
+            background: var(--proj-accent-bg, rgba(37,99,235,0.1));
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.25s ease;
+        }}
+        .proj-card:hover .proj-icon-wrap {{ transform: scale(1.08) rotate(-3deg); }}
+        .proj-title {{
+            font-size: 1.05rem; font-weight: 700; color: {C_ON_SURFACE};
+            margin: 0; flex: 1; letter-spacing: -0.01em;
+        }}
+        .proj-status {{
+            font-size: 0.65rem; font-weight: 700; padding: 0.28rem 0.7rem;
+            border-radius: 999px; letter-spacing: 0.02em;
+            white-space: nowrap;
+        }}
+        .proj-gist {{
+            color: {C_ON_SURFACE_VARIANT}; font-size: 0.875rem;
+            line-height: 1.65; margin: 0 0 0.85rem;
+        }}
 
         .md-card {{
-            background: {C_SURFACE};
-            border: 1px solid {C_OUTLINE_VARIANT};
-            border-radius: 16px;
-            padding: 1.15rem 1.25rem;
-            transition: box-shadow 0.2s ease;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(14px);
+            border: 1px solid {C_OUTLINE};
+            border-radius: 20px;
+            padding: 1.35rem 1.5rem;
+            box-shadow: 0 8px 28px rgba(37,99,235,0.07);
+            transition: all 0.28s ease;
         }}
-        .md-card:hover {{ box-shadow: 0 4px 14px rgba(60,64,67,0.07); }}
-        .md-card h3 {{ margin: 0 0 0.4rem; font-size: 0.95rem; color: {C_ON_SURFACE}; }}
-        .md-card p {{ margin: 0; color: {C_ON_SURFACE_VARIANT}; font-size: 0.875rem; line-height: 1.55; }}
+        .md-card:hover {{
+            box-shadow: 0 16px 40px rgba(37,99,235,0.11);
+            transform: translateY(-2px);
+        }}
+        .md-card h3 {{
+            margin: 0 0 0.45rem; font-size: 1rem; font-weight: 700;
+            color: {C_ON_SURFACE}; letter-spacing: -0.01em;
+        }}
+        .md-card p {{ margin: 0; color: {C_ON_SURFACE_VARIANT}; font-size: 0.875rem; line-height: 1.6; }}
 
-        .proj-meta {{ display: grid; gap: 0.5rem; }}
+        .proj-meta {{ display: grid; gap: 0.55rem; }}
         .proj-meta-row {{
-            background: {C_SURFACE_CONTAINER};
-            border-radius: 10px;
-            padding: 0.6rem 0.85rem;
+            background: linear-gradient(135deg, rgba(248,250,252,0.9), rgba(241,245,249,0.8));
+            border-radius: 12px;
+            padding: 0.7rem 0.95rem;
             border-left: 3px solid;
+            transition: transform 0.2s ease;
         }}
-        .proj-meta-label {{ font-size: 0.65rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.15rem; }}
-        .proj-meta-text {{ font-size: 0.8125rem; color: {C_ON_SURFACE}; line-height: 1.5; margin: 0; }}
+        .proj-meta-row:hover {{ transform: translateX(3px); }}
+        .proj-meta-label {{
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
+            text-transform: uppercase; margin-bottom: 0.2rem;
+        }}
+        .proj-meta-text {{
+            font-size: 0.8125rem; color: {C_ON_SURFACE}; line-height: 1.55; margin: 0;
+        }}
 
         .shipped-apps {{
-            background: {C_SURFACE_DIM};
-            border-radius: 12px;
-            padding: 0.65rem 0.85rem;
-            margin-top: 0.5rem;
-            border: 1px dashed {C_OUTLINE_VARIANT};
+            background: linear-gradient(135deg, rgba(37,99,235,0.05), rgba(124,58,237,0.04));
+            border-radius: 14px;
+            padding: 0.75rem 0.95rem;
+            margin-top: 0.55rem;
+            border: 1px dashed rgba(37,99,235,0.2);
         }}
-        .shipped-apps-title {{ font-size: 0.65rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: {C_PRIMARY}; margin: 0 0 0.35rem; }}
-        .shipped-app-item {{ padding: 0.35rem 0; border-bottom: 1px solid {C_OUTLINE_VARIANT}; }}
+        .shipped-apps-title {{
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 0.09em;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, {C_PRIMARY}, {C_VIOLET});
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0 0 0.4rem;
+        }}
+        .shipped-app-item {{ padding: 0.4rem 0; border-bottom: 1px solid rgba(148,163,184,0.2); }}
         .shipped-app-item:last-child {{ border-bottom: none; }}
-        .shipped-app-name {{ font-weight: 600; font-size: 0.8125rem; color: {C_ON_SURFACE}; }}
-        .shipped-app-gist {{ font-size: 0.75rem; color: {C_ON_SURFACE_VARIANT}; margin: 0.1rem 0 0; }}
+        .shipped-app-name {{ font-weight: 700; font-size: 0.8125rem; color: {C_ON_SURFACE}; }}
+        .shipped-app-gist {{ font-size: 0.75rem; color: {C_ON_SURFACE_VARIANT}; margin: 0.12rem 0 0; }}
 
         .sidebar-minimal {{
-            padding: 0.75rem 1rem;
+            padding: 0.85rem 1rem;
             font-size: 0.72rem;
             color: {C_ON_SURFACE_VARIANT};
-            border-top: 1px solid {C_OUTLINE_VARIANT};
+            border-top: 1px solid {C_OUTLINE};
             margin-top: auto;
         }}
-        .sidebar-minimal a {{ color: {C_PRIMARY}; text-decoration: none; font-weight: 500; }}
+        .sidebar-minimal a {{
+            color: {C_PRIMARY}; text-decoration: none; font-weight: 700;
+            transition: color 0.2s ease;
+        }}
+        .sidebar-minimal a:hover {{ color: {C_VIOLET}; }}
 
         .md-section-label {{
-            font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em;
-            text-transform: uppercase; color: {C_ON_SURFACE_VARIANT};
-            margin: 1.25rem 0 0.5rem;
+            display: flex; align-items: center; gap: 0.65rem;
+            font-size: 0.7rem; font-weight: 800; letter-spacing: 0.12em;
+            text-transform: uppercase; color: {C_ON_SURFACE};
+            margin: 1.5rem 0 0.75rem;
+        }}
+        .md-section-label::after {{
+            content: "";
+            flex: 1; height: 2px;
+            background: linear-gradient(90deg, rgba(37,99,235,0.35), transparent);
+            border-radius: 2px;
         }}
 
+        /* ── Streamlit widgets ── */
         div[data-testid="stVerticalBlockBorderWrapper"] {{
-            border-radius: 18px !important;
-            border-color: {C_OUTLINE_VARIANT} !important;
-            background: {C_SURFACE} !important;
-            transition: box-shadow 0.2s ease !important;
+            border-radius: 20px !important;
+            border: 1px solid {C_OUTLINE} !important;
+            background: rgba(255,255,255,0.78) !important;
+            backdrop-filter: blur(12px) !important;
+            box-shadow: 0 6px 24px rgba(15,23,42,0.05) !important;
+            transition: box-shadow 0.25s ease, transform 0.25s ease !important;
         }}
         div[data-testid="stVerticalBlockBorderWrapper"]:hover {{
-            box-shadow: 0 4px 16px rgba(60,64,67,0.06) !important;
+            box-shadow: 0 12px 36px rgba(37,99,235,0.09) !important;
         }}
 
         .stButton > button {{
-            transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em !important;
+            transition: all 0.22s cubic-bezier(0.2,0,0,1) !important;
+            border-radius: 14px !important;
         }}
-        .stButton > button:active {{ transform: scale(0.98) !important; }}
+        .stButton > button:hover {{
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 20px rgba(37,99,235,0.2) !important;
+        }}
+        .stButton > button:active {{ transform: scale(0.97) !important; }}
         .stButton > button[kind="primary"] {{
-            background: {C_PRIMARY} !important;
-            color: {C_ON_PRIMARY} !important;
-            border-radius: 999px !important;
+            background: linear-gradient(135deg, {C_PRIMARY} 0%, {C_VIOLET} 100%) !important;
+            color: #fff !important;
             border: none !important;
+            border-radius: 14px !important;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.35) !important;
+        }}
+        .stButton > button[kind="primary"]:hover {{
+            box-shadow: 0 8px 28px rgba(124,58,237,0.4) !important;
+        }}
+        .stLinkButton > a {{
+            border-radius: 14px !important;
+            font-weight: 700 !important;
+            transition: all 0.22s ease !important;
+        }}
+        .stLinkButton > a:hover {{
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 20px rgba(15,23,42,0.1) !important;
         }}
 
-        .stTextInput input, .stTextArea textarea {{
-            border-radius: 12px !important;
+        .stTextInput input, .stTextArea textarea, .stSelectbox > div > div {{
+            border-radius: 14px !important;
             transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
         }}
         .stTextInput input:focus, .stTextArea textarea:focus {{
             border-color: {C_PRIMARY} !important;
-            box-shadow: 0 0 0 2px {C_PRIMARY_CONTAINER} !important;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15) !important;
         }}
 
         [data-testid="stChatMessage"] {{
-            background: {C_SURFACE_CONTAINER} !important;
-            border-radius: 14px !important;
-            border: 1px solid {C_OUTLINE_VARIANT} !important;
-            animation: bentoIn 0.3s ease both;
+            background: rgba(255,255,255,0.85) !important;
+            backdrop-filter: blur(8px) !important;
+            border-radius: 16px !important;
+            border: 1px solid {C_OUTLINE} !important;
+            animation: bentoIn 0.35s ease both;
+            box-shadow: 0 2px 12px rgba(15,23,42,0.04) !important;
+        }}
+        [data-testid="stChatMessage"]:hover {{
+            box-shadow: 0 6px 20px rgba(37,99,235,0.08) !important;
+        }}
+
+        details[data-testid="stExpander"] {{
+            background: rgba(255,255,255,0.6) !important;
+            border-radius: 16px !important;
+            border: 1px solid {C_OUTLINE} !important;
+        }}
+
+        .stCaption, [data-testid="stCaptionContainer"] {{
+            color: {C_ON_SURFACE_VARIANT} !important;
         }}
         </style>
         """,
@@ -284,7 +512,7 @@ def _shipped_apps_html(apps: tuple[ShippedApp, ...]) -> str:
     return dedent(
         f"""
         <div class="shipped-apps">
-            <p class="shipped-apps-title">Live in this repo</p>
+            <p class="shipped-apps-title">Live in this portfolio</p>
             {items}
         </div>
         """
@@ -294,7 +522,10 @@ def _shipped_apps_html(apps: tuple[ShippedApp, ...]) -> str:
 def render_sidebar_minimal() -> None:
     """One-line footer — use on every page sidebar."""
     _render_html(
-        '<div class="sidebar-minimal"><a href="https://iamabyjain.com" target="_blank">iamabyjain.com</a></div>'
+        '<div class="sidebar-minimal">'
+        '<a href="https://iamabyjain.com" target="_blank">iamabyjain.com</a>'
+        " · Abhishek Jain"
+        "</div>"
     )
 
 
@@ -307,18 +538,28 @@ def bento_metrics(items: list[tuple[str, str]]) -> None:
     _render_html(f'<div class="bento-metrics">{cells}</div>')
 
 
+def intro_strip(text: str) -> None:
+    """Styled intro paragraph with optional **bold** markers preserved."""
+    safe = html.escape(text).replace("**", "§B§").replace("§B§", "<strong>", 1).replace("§B§", "</strong>", 1)
+    while "§B§" in safe:
+        safe = safe.replace("§B§", "<strong>", 1).replace("§B§", "</strong>", 1)
+    _render_html(f'<div class="intro-strip bento-animate">{safe}</div>')
+
+
 def profile_hero(name: str, tagline: str, pills: list[str] | None = None) -> None:
     chips = ""
     if pills:
         chips = "".join(f'<span class="md-chip">{html.escape(p)}</span>' for p in pills)
-        chips = f'<div style="display:flex;flex-wrap:wrap;margin-top:0.85rem">{chips}</div>'
+        chips = f'<div style="display:flex;flex-wrap:wrap;margin-top:1rem">{chips}</div>'
     _render_html(
         f"""
         <div class="profile-hero bento-animate">
-            <div class="avatar">👤</div>
-            <h1>{html.escape(name)}</h1>
-            <p class="tagline">{html.escape(tagline)}</p>
-            {chips}
+            <div class="hero-inner">
+                <div class="avatar">👤</div>
+                <h1>{html.escape(name)}</h1>
+                <p class="tagline">{html.escape(tagline)}</p>
+                {chips}
+            </div>
         </div>
         """
     )
@@ -328,7 +569,7 @@ def hero(title: str, subtitle: str, pills: list[str] | None = None) -> None:
     chips = ""
     if pills:
         chips = "".join(f'<span class="md-chip">{html.escape(p)}</span>' for p in pills)
-        chips = f'<div style="margin-top:0.75rem;display:flex;flex-wrap:wrap">{chips}</div>'
+        chips = f'<div style="margin-top:0.85rem;display:flex;flex-wrap:wrap">{chips}</div>'
     _render_html(
         f"""
         <div class="md-hero bento-animate">
@@ -342,35 +583,29 @@ def hero(title: str, subtitle: str, pills: list[str] | None = None) -> None:
 
 def rich_project_card(project: Project) -> None:
     shipped = _shipped_apps_html(project.shipped_apps)
-    repo_line = (
-        f'<p style="font-size:0.7rem;color:{C_ON_SURFACE_VARIANT};margin:0.5rem 0 0;">'
-        f'{html.escape(project.repo_hint)}</p>'
-        if project.repo_hint
-        else ""
-    )
+    accent = project.accent
     _render_html(
         f"""
-        <div class="proj-card bento-animate">
-            <div class="proj-accent" style="background:{project.accent}"></div>
+        <div class="proj-card bento-animate" style="--proj-accent:{accent};--proj-accent-bg:{accent}18">
+            <div class="proj-accent" style="background:{accent}"></div>
             <div class="proj-body">
                 <div class="proj-head">
-                    <span class="proj-icon">{project.icon}</span>
+                    <div class="proj-icon-wrap" style="background:{accent}15">{project.icon}</div>
                     <p class="proj-title">{html.escape(project.name)}</p>
-                    <span class="proj-status" style="background:{project.accent}18;color:{project.accent}">{html.escape(project.status)}</span>
+                    <span class="proj-status" style="background:{accent}18;color:{accent}">{html.escape(project.status)}</span>
                 </div>
                 <p class="proj-gist">{html.escape(project.gist)}</p>
                 {shipped}
-                <div class="proj-meta" style="margin-top:0.75rem">
-                    <div class="proj-meta-row" style="border-color:{C_TEAL}">
-                        <div class="proj-meta-label" style="color:{C_TEAL}">Industry</div>
+                <div class="proj-meta" style="margin-top:0.85rem">
+                    <div class="proj-meta-row" style="border-color:{C_CYAN}">
+                        <div class="proj-meta-label" style="color:#0891B2">Industry</div>
                         <p class="proj-meta-text">{html.escape(project.industry)}</p>
                     </div>
-                    <div class="proj-meta-row" style="border-color:{C_YELLOW}">
-                        <div class="proj-meta-label" style="color:#B06000">Who benefits</div>
+                    <div class="proj-meta-row" style="border-color:{C_AMBER}">
+                        <div class="proj-meta-label" style="color:#D97706">Who benefits</div>
                         <p class="proj-meta-text">{html.escape(project.beneficiaries)}</p>
                     </div>
                 </div>
-                {repo_line}
             </div>
         </div>
         """

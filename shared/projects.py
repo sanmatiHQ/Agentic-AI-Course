@@ -24,24 +24,23 @@ class Project:
     industry: str
     beneficiaries: str
     shipped_apps: tuple[ShippedApp, ...] = ()
-    repo_hint: str = ""
 
 
-# ── Course portfolio (this Streamlit repo) ─────────────────────────────────────
+# ── Course portfolio (this Streamlit repo — public) ───────────────────────────
 COURSE_PORTFOLIO = Project(
     name="Agentic AI Course Portfolio",
-    status="Active · Streamlit",
+    status="Live · Streamlit Cloud",
     accent="#1A73E8",
     icon="🎓",
     gist=(
         "IITM Pravartak × FutureSense — AI Agent Workflows & Agentic Systems. "
-        "Each module ships as a live Streamlit app in this repo. "
-        "Course orientation notes merged from the legacy FutureSense repo live in docs/."
+        "Each course module ships as a live Streamlit app here; assignments stay "
+        "deployable and portfolio-ready from day one."
     ),
     industry="EdTech · AI upskilling · enterprise L&D",
     beneficiaries=(
-        "Working professionals building agentic AI skills, instructors needing demonstrable "
-        "assignments, and hiring managers evaluating portfolio-ready capstone work."
+        "Working professionals building agentic AI skills, instructors evaluating "
+        "demonstrable capstone work, and hiring managers reviewing live portfolio apps."
     ),
     shipped_apps=(
         ShippedApp(
@@ -50,71 +49,118 @@ COURSE_PORTFOLIO = Project(
             page_path="pages/2_🧠_Concept_Explainer.py",
         ),
     ),
-    repo_hint="sanmatiHQ/Agentic-AI-Course",
 )
 
-# ── Independent ventures (outside this repo) ───────────────────────────────────
+# ── Independent ventures (private codebases — no repo links in UI) ─────────────
 INDEPENDENT_PROJECTS: list[Project] = [
     Project(
         name="GeM Bid System",
-        status="In production",
+        status="In production · Private",
         accent="#34A853",
         icon="🏛️",
         gist=(
-            "Multi-agent intelligence mesh for India's Government e-Marketplace — harvests bids, "
-            "extracts PDFs, enriches with LLMs, links contracts & MKP data, powers tenant dashboards."
+            "14-agent intelligence mesh on GCP Cloud Run and Mac Mini — harvests GeM bids, "
+            "contracts, and MKP catalogue; extracts PDF truth with local LLMs; Cortex "
+            "briefs and price benchmarks; tenant dashboard at gem.sanmatitraders.com."
         ),
         industry="GovTech · B2B procurement · MSME commerce",
         beneficiaries=(
-            "Bid managers chasing GeM tenders, MSMEs competing for government contracts, "
-            "procurement consultants, and analysts tracking ministry spend."
+            "MSME bid managers chasing GeM tenders, procurement consultants, and analysts "
+            "tracking ministry spend and contract outcomes."
         ),
-        repo_hint="sanmatiHQ/GeM_Bid_System (private monorepo)",
     ),
     Project(
         name="Bharat Quant",
-        status="In development",
+        status="Research · paper-first · Private",
         accent="#FBBC04",
         icon="📈",
         gist=(
-            "Quantitative research engine for Indian markets — systematic signals, backtesting, "
-            "and execution workflows tuned for NSE/BSE microstructure and regulatory context."
+            "Autonomous NSE trading research stack — Zerodha Kite Connect, 52+ event-driven "
+            "strategies, Sortino/Calmar promotion gates, PPO reinforcement learning with "
+            "shadow backtest, and a FastAPI ops dashboard."
         ),
-        industry="FinTech · capital markets · quantitative finance",
+        industry="FinTech · quantitative finance · capital markets",
         beneficiaries=(
-            "Prop traders, portfolio managers, research analysts, and fintech teams building "
-            "systematic strategies for Bharat markets."
+            "Prop traders and quants building systematic, risk-gated strategies for Indian "
+            "equities — paper trading validated before any live capital."
         ),
     ),
     Project(
         name="Clerk",
-        status="Early build",
+        status="Early build · local-first · Private",
         accent="#EA4335",
         icon="📬",
         gist=(
-            "Local-first personal ops assistant — mail, meetings, files, and OEM price tracking "
-            "on your machine; sensitive data never leaves your hardware."
+            "Personal ops console on the Mac Mini — Gmail and Drive workflows for bids, "
+            "trainings, meetings, document filing, and OEM price tracking. GeM OTP "
+            "auto-forwards to ComRelay; mail and files never leave your hardware."
         ),
         industry="Productivity · SMB operations · personal knowledge work",
         beneficiaries=(
-            "Founders buried in admin, sales teams tracking OEM pricing, operators who need "
-            "a private assistant without cloud exposure."
+            "Founders buried in admin, sales teams tracking OEM pricing, and operators who "
+            "need a private assistant without cloud data exposure."
         ),
-        repo_hint="sanmatiHQ/clerk",
     ),
     Project(
         name="IntelliMatrix",
-        status="In design",
+        status="In development · Private",
         accent="#9334E6",
         icon="🔮",
         gist=(
-            "Intelligence layer fusing structured data, embeddings, and decision rules into "
-            "actionable matrices — noisy business signals → strategy-ready views."
+            "Self-hosted OSINT intelligence platform — cases, entity graph, geospatial views, "
+            "and reports, with an integrated Camera Vision module (CCTV analytics, LPR, face "
+            "gallery) that runs entirely on-prem."
         ),
-        industry="Enterprise analytics · strategy consulting · ops intelligence",
+        industry="OSINT · security operations · on-prem analytics",
         beneficiaries=(
-            "Strategy teams, COOs, and data leaders who need cross-silo insight without a "
-            "full data-warehouse programme."
+            "Investigators, security teams, and analysts who need cross-source intelligence "
+            "and video analytics without sending biometrics to the cloud."
+        ),
+    ),
+    Project(
+        name="GeM Crawler Fleet",
+        status="Design target · Private",
+        accent="#007B83",
+        icon="🕸️",
+        gist=(
+            "Distributed GeM portal crawler in a standalone repo — Agent Provisioning plus "
+            "edge fleet nodes that accelerate platform-agent HTTP harvest (parallel shards, "
+            "on-demand bursts) without replacing agent parsing or quality pipelines."
+        ),
+        industry="GovTech · distributed systems · crawl infrastructure",
+        beneficiaries=(
+            "GeM Bid System harvest agents that need faster, wider GeM coverage while each "
+            "agent retains ownership of its domain logic and MongoDB writes."
+        ),
+    ),
+    Project(
+        name="Race Management",
+        status="In development · Private",
+        accent="#E37400",
+        icon="🏃",
+        gist=(
+            "End-to-end race operations — bib assignment, participant registry, and "
+            "event-day management for running and cycling events."
+        ),
+        industry="Sports tech · event operations",
+        beneficiaries=(
+            "Race organizers, timing crews, and event volunteers managing participant "
+            "logistics on race day."
+        ),
+    ),
+    Project(
+        name="Daily Reporting System",
+        status="In development · Private",
+        accent="#5F6368",
+        icon="📋",
+        gist=(
+            "Structured daily reporting workflow — capture field updates, review submissions, "
+            "and roll up operational status for team visibility."
+        ),
+        industry="Enterprise ops · reporting · team coordination",
+        beneficiaries=(
+            "Managers and field teams who need consistent, auditable daily status capture "
+            "across distributed operations."
         ),
     ),
 ]

@@ -6,6 +6,7 @@ from shared.projects import ALL_PROJECTS, COURSE_PORTFOLIO, INDEPENDENT_PROJECTS
 from shared.ui import (
     bento_metrics,
     inject_material_theme,
+    intro_strip,
     profile_hero,
     render_sidebar_minimal,
     rich_project_card,
@@ -30,9 +31,9 @@ with c2:
     if st.button("Concept Explainer →", use_container_width=True, type="primary"):
         st.switch_page("pages/2_🧠_Concept_Explainer.py")
 
-st.markdown(
-    "Production AI builder — procurement intelligence, quant finance, agentic education, "
-    "and personal ops. **This repo** is the live course portfolio; other ventures run separately."
+intro_strip(
+    "Production AI builder — procurement intelligence, quant finance, OSINT, agentic education, "
+    "and personal ops. **This app** is the public course portfolio; other ventures are private codebases."
 )
 
 bento_metrics([

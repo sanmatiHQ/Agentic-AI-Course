@@ -5,14 +5,17 @@ Streamlit portfolio for IITM Pravartak × FutureSense · merged with course orie
 
 ## Projects
 
-| # | Project | Where |
+| # | Project | Status |
 |---|---------|--------|
-| 1 | **Agentic AI Course Portfolio** | This repo (Streamlit Cloud) |
+| 1 | **Agentic AI Course Portfolio** | Live on Streamlit Cloud |
 | ↳ | Concept Explainer *(live app)* | Sidebar → Concept Explainer |
-| 2 | GeM Bid System | Private monorepo |
-| 3 | Bharat Quant | In development |
-| 4 | Clerk | sanmatiHQ/clerk |
-| 5 | IntelliMatrix | In design |
+| 2 | GeM Bid System | In production |
+| 3 | Bharat Quant | Research · paper-first |
+| 4 | Clerk | Early build · local-first |
+| 5 | IntelliMatrix | In development |
+| 6 | GeM Crawler Fleet | Design target |
+| 7 | Race Management | In development |
+| 8 | Daily Reporting System | In development |
 
 ## Local run
 
