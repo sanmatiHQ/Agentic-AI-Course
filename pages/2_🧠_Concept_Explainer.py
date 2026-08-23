@@ -8,6 +8,13 @@ import streamlit as st
 
 from shared.llm_providers import chat, validate_and_list_models
 from shared.prompts import FOLLOWUP_PROMPT, SYSTEM_PROMPT
+from shared.secrets_config import (
+    access_pin_required,
+    access_pin_valid,
+    has_hosted_keys,
+    hosted_key_for,
+    resolve_api_key,
+)
 from shared.ui import hero, inject_material_theme, render_html, render_sidebar_minimal, section_label
 
 
@@ -25,6 +32,20 @@ def _format_transcript(messages: list[dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
+def _validate_provider(provider: str, api_key: str) -> bool:
+    with st.spinner("Connecting…"):
+        models, err = validate_and_list_models(provider, api_key)
+    if err:
+        st.session_state.ce_validated = False
+        st.session_state.ce_models = []
+        st.error(err)
+        return False
+    st.session_state.ce_validated = True
+    st.session_state.ce_models = models
+    st.session_state.ce_selected_model = models[0].id
+    return True
+
+
 inject_material_theme()
 
 _defaults = {
@@ -32,14 +53,29 @@ _defaults = {
     "ce_validated": False,
     "ce_models": [],
     "ce_provider": "openai",
-    "ce_api_key": "",
+    "ce_byok_key": "",
     "ce_selected_model": None,
+    "ce_pin_unlocked": False,
 }
 for _k, _v in _defaults.items():
     if _k not in st.session_state:
         st.session_state[_k] = _v
 
-# ── Sidebar: setup only (no project list) ─────────────────────────────────────
+_using_hosted = has_hosted_keys()
+
+# ── Optional PIN gate (secrets only — not in git) ─────────────────────────────
+if access_pin_required() and not st.session_state.ce_pin_unlocked:
+    hero("Concept Explainer", "Enter access PIN to continue.")
+    pin = st.text_input("Access PIN", type="password", placeholder="PIN from app owner")
+    if st.button("Unlock", type="primary"):
+        if access_pin_valid(pin):
+            st.session_state.ce_pin_unlocked = True
+            st.rerun()
+        else:
+            st.error("Incorrect PIN.")
+    st.stop()
+
+# ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
     section_label("Setup")
     provider = st.radio(
@@ -55,24 +91,24 @@ with st.sidebar:
         st.session_state.ce_models = []
         st.session_state.ce_selected_model = None
 
-    api_key = st.text_input("API key", type="password", placeholder="Paste key…")
+    hosted_key = hosted_key_for(provider)
 
-    if st.button("Validate & load models", type="primary", use_container_width=True):
-        if not api_key.strip():
-            st.error("Enter an API key.")
-        else:
-            with st.spinner("Connecting…"):
-                models, err = validate_and_list_models(provider, api_key.strip())
-            if err:
-                st.session_state.ce_validated = False
-                st.session_state.ce_models = []
-                st.error(err)
+    if hosted_key:
+        st.success("Provider connected · server keys")
+        if not st.session_state.ce_validated:
+            _validate_provider(provider, hosted_key)
+    else:
+        st.caption("Bring your own key (BYOK)")
+        byok = st.text_input("API key", type="password", placeholder="Paste key…")
+        if byok != st.session_state.ce_byok_key:
+            st.session_state.ce_byok_key = byok
+            st.session_state.ce_validated = False
+
+        if st.button("Validate & load models", type="primary", use_container_width=True):
+            if not byok.strip():
+                st.error("Enter an API key.")
             else:
-                st.session_state.ce_validated = True
-                st.session_state.ce_models = models
-                st.session_state.ce_api_key = api_key.strip()
-                st.session_state.ce_selected_model = models[0].id
-                st.success(f"{len(models)} models ready")
+                _validate_provider(provider, byok.strip())
 
     if st.session_state.ce_validated and st.session_state.ce_models:
         section_label("Model")
@@ -96,7 +132,7 @@ with st.sidebar:
 
     render_sidebar_minimal()
 
-# ── Main bento layout ─────────────────────────────────────────────────────────
+# ── Main ──────────────────────────────────────────────────────────────────────
 hero(
     "Concept Explainer",
     "Explain any concept for SMEs, experts, and engineers.",
@@ -104,14 +140,29 @@ hero(
 )
 
 if not st.session_state.ce_validated:
-    render_html(
-        """
-        <div class="md-card bento-animate">
-            <h3>Add your API key in the sidebar</h3>
-            <p>Keys stay in this browser session only — never stored on the server.</p>
-        </div>
-        """
-    )
+    if _using_hosted:
+        render_html(
+            """
+            <div class="md-card bento-animate">
+                <h3>Connecting to provider…</h3>
+                <p>Server keys are configured. Pick OpenAI or Claude in the sidebar.</p>
+            </div>
+            """
+        )
+    else:
+        render_html(
+            """
+            <div class="md-card bento-animate">
+                <h3>Add your API key in the sidebar</h3>
+                <p>BYOK mode — keys stay in this browser session only.</p>
+            </div>
+            """
+        )
+    st.stop()
+
+active_key = resolve_api_key(st.session_state.ce_provider, st.session_state.ce_byok_key)
+if not active_key:
+    st.error("No API key available for this provider.")
     st.stop()
 
 input_tile, chat_tile = st.columns([2, 3], gap="medium")
@@ -138,7 +189,7 @@ with input_tile:
             with st.spinner("Generating…"):
                 reply = chat(
                     provider=st.session_state.ce_provider,
-                    api_key=st.session_state.ce_api_key,
+                    api_key=active_key,
                     model=st.session_state.ce_selected_model,
                     messages=[{"role": "user", "content": user_msg}],
                     system=SYSTEM_PROMPT,
@@ -165,7 +216,7 @@ with chat_tile:
             with st.spinner("Thinking…"):
                 reply = chat(
                     provider=st.session_state.ce_provider,
-                    api_key=st.session_state.ce_api_key,
+                    api_key=active_key,
                     model=st.session_state.ce_selected_model,
                     messages=history,
                     system=FOLLOWUP_PROMPT,
