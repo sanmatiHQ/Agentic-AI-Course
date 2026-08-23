@@ -521,12 +521,12 @@ def inject_material_theme() -> None:
             margin: 0 0 0.65rem;
         }}
         .ce-empty {{
-            text-align: center; padding: 2.5rem 1.5rem;
+            text-align: center; padding: 1.5rem 1rem 0.5rem;
             color: {C_ON_SURFACE_VARIANT};
         }}
-        .ce-empty .icon {{ font-size: 2.5rem; margin-bottom: 0.65rem; opacity: 0.85; }}
-        .ce-empty h3 {{ margin: 0 0 0.35rem; color: {C_ON_SURFACE}; font-size: 1rem; font-weight: 700; }}
-        .ce-empty p {{ margin: 0; font-size: 0.85rem; line-height: 1.55; }}
+        .ce-empty .icon {{ font-size: 2rem; margin-bottom: 0.4rem; }}
+        .ce-empty h3 {{ margin: 0 0 0.25rem; color: {C_ON_SURFACE}; font-size: 0.95rem; font-weight: 700; }}
+        .ce-empty p {{ margin: 0; font-size: 0.82rem; line-height: 1.5; }}
 
         div[data-testid="stVerticalBlockBorderWrapper"] .ce-panel-title {{
             margin-top: -0.25rem;
@@ -692,11 +692,23 @@ def ce_empty_chat() -> None:
     _render_html(
         """
         <div class="ce-empty bento-animate">
-            <div class="icon">💡</div>
-            <h3>Ready when you are</h3>
-            <p>Enter a concept on the left, pick your audiences, and hit <strong>Explain</strong>.
-            Try a quick example below to get started.</p>
+            <div class="icon">💬</div>
+            <h3>What would you like explained?</h3>
+            <p>Type below or tap an example to start.</p>
         </div>
         """
+    )
+
+
+def inject_ce_chat_layout() -> None:
+    """Narrow, chat-first main column."""
+    st.markdown(
+        """
+        <style>
+        .block-container { max-width: 780px !important; padding-bottom: 5rem !important; }
+        [data-testid="stChatInput"] { border-radius: 16px !important; }
+        </style>
+        """,
+        unsafe_allow_html=True,
     )
 
