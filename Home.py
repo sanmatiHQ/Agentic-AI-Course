@@ -12,6 +12,8 @@ st.set_page_config(
 st.title("Agentic AI Course")
 st.caption("Build assignments and projects here with Streamlit.")
 
+st.success("**Concept Explainer** is live — open it from the sidebar (🧠 Concept Explainer).")
+
 st.markdown(
     """
 Welcome. This workspace is set up for **IITM Pravartak / FutureSense**
