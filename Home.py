@@ -39,7 +39,7 @@ under `pages/`.
 
 1. Push this repo to GitHub.
 2. Sign in at [share.streamlit.io](https://share.streamlit.io) with GitHub.
-3. **Create app** → pick this repo → main file: `Home.py` → Deploy.
+3. **Create app** → pick this repo → branch `main` → main file: **`streamlit_app.py`** (or `Home.py`) → Deploy.
 
 Community Cloud includes **1 private app + unlimited public apps** at no cost.
 """
