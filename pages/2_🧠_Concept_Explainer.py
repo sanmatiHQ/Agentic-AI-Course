@@ -25,8 +25,6 @@ def _format_transcript(messages: list[dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
-st.set_page_config(page_title="Concept Explainer", page_icon="🧠", layout="wide")
-
 # ── Session defaults ──────────────────────────────────────────────────────────
 _defaults = {
     "ce_messages": [],

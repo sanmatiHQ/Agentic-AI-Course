@@ -13,4 +13,4 @@ fi
 # shellcheck disable=SC1091
 source .venv/bin/activate
 
-exec streamlit run Home.py "$@"
+exec streamlit run streamlit_app.py "$@"

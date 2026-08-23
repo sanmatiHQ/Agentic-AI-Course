@@ -1,6 +1,19 @@
-"""Streamlit Community Cloud entry point (delegates to Home.py)."""
+"""Streamlit Community Cloud entry point."""
 
-from pathlib import Path
-import runpy
+import streamlit as st
 
-runpy.run_path(str(Path(__file__).resolve().parent / "Home.py"), run_name="__main__")
+st.set_page_config(
+    page_title="Agentic AI Course",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+home = st.Page("Home.py", title="Home", icon="🤖", default=True)
+concept = st.Page(
+    "pages/2_🧠_Concept_Explainer.py",
+    title="Concept Explainer",
+    icon="🧠",
+)
+
+st.navigation([home, concept]).run()
