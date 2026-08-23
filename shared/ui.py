@@ -486,6 +486,58 @@ def inject_material_theme() -> None:
         .stCaption, [data-testid="stCaptionContainer"] {{
             color: {C_ON_SURFACE_VARIANT} !important;
         }}
+
+        /* ── Concept Explainer workspace ── */
+        .ce-topbar {{
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 1rem; flex-wrap: wrap;
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(16px);
+            border: 1px solid {C_OUTLINE};
+            border-radius: 20px;
+            padding: 1rem 1.35rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 28px rgba(37,99,235,0.08);
+        }}
+        .ce-topbar h1 {{
+            font-size: 1.35rem; font-weight: 800; margin: 0;
+            letter-spacing: -0.02em; color: {C_ON_SURFACE};
+        }}
+        .ce-topbar p {{ margin: 0.15rem 0 0; font-size: 0.82rem; color: {C_ON_SURFACE_VARIANT}; }}
+        .ce-model-badge {{
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(124,58,237,0.08));
+            border: 1px solid rgba(37,99,235,0.15);
+            border-radius: 999px; padding: 0.35rem 0.85rem;
+            font-size: 0.72rem; font-weight: 700; color: #1D4ED8;
+        }}
+        .ce-model-dot {{
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #22C55E; box-shadow: 0 0 0 3px rgba(34,197,94,0.25);
+        }}
+        .ce-panel-head {{
+            font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em;
+            text-transform: uppercase; color: {C_ON_SURFACE_VARIANT};
+            margin: 0 0 0.65rem;
+        }}
+        .ce-empty {{
+            text-align: center; padding: 2.5rem 1.5rem;
+            color: {C_ON_SURFACE_VARIANT};
+        }}
+        .ce-empty .icon {{ font-size: 2.5rem; margin-bottom: 0.65rem; opacity: 0.85; }}
+        .ce-empty h3 {{ margin: 0 0 0.35rem; color: {C_ON_SURFACE}; font-size: 1rem; font-weight: 700; }}
+        .ce-empty p {{ margin: 0; font-size: 0.85rem; line-height: 1.55; }}
+
+        div[data-testid="stVerticalBlockBorderWrapper"] .ce-panel-title {{
+            margin-top: -0.25rem;
+        }}
+        [data-testid="stChatMessage"][data-testid="user"] {{
+            background: linear-gradient(135deg, rgba(37,99,235,0.08), rgba(124,58,237,0.06)) !important;
+        }}
+        [data-testid="stChatMessageContent"] p {{
+            line-height: 1.65 !important;
+        }}
+        .stCheckbox label span {{ font-size: 0.82rem !important; font-weight: 600 !important; }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -539,11 +591,13 @@ def bento_metrics(items: list[tuple[str, str]]) -> None:
 
 
 def intro_strip(text: str) -> None:
-    """Styled intro paragraph with optional **bold** markers preserved."""
-    safe = html.escape(text).replace("**", "§B§").replace("§B§", "<strong>", 1).replace("§B§", "</strong>", 1)
-    while "§B§" in safe:
-        safe = safe.replace("§B§", "<strong>", 1).replace("§B§", "</strong>", 1)
-    _render_html(f'<div class="intro-strip bento-animate">{safe}</div>')
+    """Styled intro paragraph; wrap phrases in ** for bold."""
+    parts = text.split("**")
+    chunks: list[str] = []
+    for i, part in enumerate(parts):
+        escaped = html.escape(part)
+        chunks.append(f"<strong>{escaped}</strong>" if i % 2 == 1 else escaped)
+    _render_html(f'<div class="intro-strip bento-animate">{"".join(chunks)}</div>')
 
 
 def profile_hero(name: str, tagline: str, pills: list[str] | None = None) -> None:
@@ -614,3 +668,35 @@ def rich_project_card(project: Project) -> None:
 
 def section_label(text: str) -> None:
     _render_html(f'<p class="md-section-label">{html.escape(text)}</p>')
+
+
+def ce_topbar(provider: str, model: str) -> None:
+    label = "OpenAI" if provider == "openai" else "Claude"
+    _render_html(
+        f"""
+        <div class="ce-topbar bento-animate">
+            <div>
+                <h1>Concept Explainer</h1>
+                <p>Multi-audience explanations · chat · export</p>
+            </div>
+            <span class="ce-model-badge">
+                <span class="ce-model-dot"></span>
+                {html.escape(label)} · {html.escape(model)}
+            </span>
+        </div>
+        """
+    )
+
+
+def ce_empty_chat() -> None:
+    _render_html(
+        """
+        <div class="ce-empty bento-animate">
+            <div class="icon">💡</div>
+            <h3>Ready when you are</h3>
+            <p>Enter a concept on the left, pick your audiences, and hit <strong>Explain</strong>.
+            Try a quick example below to get started.</p>
+        </div>
+        """
+    )
+
