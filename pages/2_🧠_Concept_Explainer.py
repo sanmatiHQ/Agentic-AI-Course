@@ -15,6 +15,7 @@ from shared.secrets_config import (
     resolve_api_key,
 )
 from shared.ui import (
+    ce_audience_hint,
     ce_empty_chat,
     ce_topbar,
     inject_ce_chat_layout,
@@ -62,13 +63,14 @@ def _validate_provider(provider: str, api_key: str) -> bool:
 
 def _selected_audiences() -> list[str]:
     picked: list[str] = []
-    if st.session_state.ce_aud_sme:
+    if st.session_state.get("ce_aud_sme", True):
         picked.append(AUDIENCES[0])
-    if st.session_state.ce_aud_expert:
+    if st.session_state.get("ce_aud_expert", True):
         picked.append(AUDIENCES[1])
-    if st.session_state.ce_aud_tech:
+    if st.session_state.get("ce_aud_tech", True):
         picked.append(AUDIENCES[2])
-    return picked
+    # Never block — if sidebar unchecked all, explain for everyone
+    return picked or list(AUDIENCES)
 
 
 def _api_history() -> list[dict[str, str]]:
@@ -94,9 +96,6 @@ def _reply(user_text: str, active_key: str) -> None:
         return
 
     audiences = _selected_audiences()
-    if not audiences:
-        st.warning("Select at least one audience in the sidebar.")
-        return
 
     if not st.session_state.ce_messages:
         st.session_state.ce_active_concept = text
@@ -187,9 +186,10 @@ with st.sidebar:
         st.caption(opts[sel].price_label)
 
     section_label("Audience")
-    st.session_state.ce_aud_sme = st.checkbox(AUDIENCES[0], value=st.session_state.ce_aud_sme)
-    st.session_state.ce_aud_expert = st.checkbox(AUDIENCES[1], value=st.session_state.ce_aud_expert)
-    st.session_state.ce_aud_tech = st.checkbox(AUDIENCES[2], value=st.session_state.ce_aud_tech)
+    st.caption("Optional — defaults to all three")
+    st.checkbox(AUDIENCES[0], key="ce_aud_sme")
+    st.checkbox(AUDIENCES[1], key="ce_aud_expert")
+    st.checkbox(AUDIENCES[2], key="ce_aud_tech")
 
     if st.session_state.ce_messages:
         st.download_button(
@@ -216,6 +216,7 @@ if not active_key:
     st.stop()
 
 ce_topbar(st.session_state.ce_provider, st.session_state.ce_selected_model or "")
+ce_audience_hint(_selected_audiences())
 
 if not st.session_state.ce_messages:
     ce_empty_chat()

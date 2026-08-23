@@ -527,6 +527,11 @@ def inject_material_theme() -> None:
         .ce-empty .icon {{ font-size: 2rem; margin-bottom: 0.4rem; }}
         .ce-empty h3 {{ margin: 0 0 0.25rem; color: {C_ON_SURFACE}; font-size: 0.95rem; font-weight: 700; }}
         .ce-empty p {{ margin: 0; font-size: 0.82rem; line-height: 1.5; }}
+        .ce-audience-hint {{
+            font-size: 0.78rem; color: {C_ON_SURFACE_VARIANT};
+            margin: -0.35rem 0 0.85rem; line-height: 1.45;
+        }}
+        .ce-audience-hint strong {{ color: {C_ON_SURFACE}; font-weight: 600; }}
 
         div[data-testid="stVerticalBlockBorderWrapper"] .ce-panel-title {{
             margin-top: -0.25rem;
@@ -697,6 +702,13 @@ def ce_empty_chat() -> None:
             <p>Type below or tap an example to start.</p>
         </div>
         """
+    )
+
+
+def ce_audience_hint(audiences: list[str]) -> None:
+    labels = ", ".join(html.escape(a) for a in audiences)
+    _render_html(
+        f'<p class="ce-audience-hint">Explaining for: <strong>{labels}</strong> · change in sidebar</p>'
     )
 
 
