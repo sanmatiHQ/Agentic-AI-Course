@@ -1,5 +1,8 @@
+# Agentic AI Course — Streamlit config (local + Community Cloud)
+# Deploy: streamlit_app.py · requirements.txt · this file
+
 [theme]
-base = "light"
+# Google Material light — matches shared/ui.py
 primaryColor = "#1A73E8"
 backgroundColor = "#F8F9FA"
 secondaryBackgroundColor = "#FFFFFF"
@@ -9,9 +12,22 @@ font = "sans serif"
 [server]
 headless = true
 port = 8501
+enableCORS = false
+enableXsrfProtection = true
+maxUploadSize = 10
 
 [browser]
 gatherUsageStats = false
+serverAddress = "localhost"
+serverPort = 8501
 
 [runner]
 fastReruns = true
+magicEnabled = false
+
+[client]
+showSidebarNavigation = true
+toolbarMode = "auto"
+
+[logger]
+level = "info"

@@ -1,0 +1,12 @@
+# Streamlit Community Cloud deploy checklist
+#
+# Repository : sanmatiHQ/Agentic-AI-Course
+# Branch       : main
+# Main file    : streamlit_app.py
+# Python       : 3.11 (from requirements.txt)
+#
+# Theme        : .streamlit/config.toml
+# Secrets      : set in Cloud dashboard only (never commit API keys)
+#
+# Default page : Abhishek Jain (landing)
+# Apps         : Concept Explainer (sidebar)
