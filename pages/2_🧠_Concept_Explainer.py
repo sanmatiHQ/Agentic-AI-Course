@@ -6,6 +6,7 @@ from datetime import datetime
 
 import streamlit as st
 
+from shared.chat_persistence import hydrate, persist, persistence_mode_label
 from shared.chat_store import (
     MAX_SAVED_CHATS,
     archive_list,
@@ -193,6 +194,10 @@ for _k, _v in _defaults.items():
     if _k not in st.session_state:
         st.session_state[_k] = _v
 
+hydrate()
+if not st.session_state.get("ce_hydrated"):
+    st.rerun()
+
 if access_pin_required() and not st.session_state.ce_pin_unlocked:
     render_html('<div class="md-card"><h3>Concept Explainer</h3><p>Enter access PIN.</p></div>')
     pin = st.text_input("PIN", type="password")
@@ -243,6 +248,7 @@ with st.sidebar:
     st.checkbox(AUDIENCES[2], key="ce_aud_tech")
 
     section_label("Past chats")
+    st.caption(persistence_mode_label())
     saved = archive_list()
     if not saved:
         st.caption("No saved chats yet — start one below.")

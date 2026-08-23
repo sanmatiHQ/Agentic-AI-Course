@@ -8,6 +8,8 @@ from uuid import uuid4
 
 import streamlit as st
 
+from shared.chat_persistence import persist
+
 MAX_SAVED_CHATS = 25
 
 
@@ -88,6 +90,7 @@ def upsert_current_chat() -> None:
             return
     chats.insert(0, snap)
     del chats[MAX_SAVED_CHATS:]
+    persist()
 
 
 def load_chat(chat_id: str) -> None:
@@ -102,6 +105,7 @@ def load_chat(chat_id: str) -> None:
         st.session_state.ce_request_count = int(item.get("request_count", 0))
         st.session_state.ce_chat_started_at = item.get("created_at")
         set_active_chat_id(chat_id)
+        persist()
         return
 
 
@@ -114,6 +118,7 @@ def start_new_chat() -> None:
     st.session_state.ce_request_count = 0
     st.session_state.ce_chat_started_at = None
     set_active_chat_id(None)
+    persist()
 
 
 def on_first_message() -> None:

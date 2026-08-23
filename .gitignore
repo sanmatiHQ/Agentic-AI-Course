@@ -8,6 +8,7 @@ __pycache__/
 .DS_Store
 .env
 .streamlit/secrets.toml
+data/chats/
 *.log
 .idea/
 .vscode/
