@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html
+from textwrap import dedent
 
 import streamlit as st
 
@@ -24,6 +25,11 @@ C_YELLOW = "#F9AB00"
 C_RED = "#D93025"
 C_PURPLE = "#9334E6"
 C_TEAL = "#007B83"
+
+
+def _render_html(fragment: str) -> None:
+    """Render HTML via st.html — avoids markdown code-block escaping from indented strings."""
+    st.html(dedent(fragment).strip())
 
 
 def inject_material_theme() -> None:
@@ -270,44 +276,44 @@ def _shipped_apps_html(apps: tuple[ShippedApp, ...]) -> str:
     if not apps:
         return ""
     items = "".join(
-        f"""
-        <div class="shipped-app-item">
-            <span>▸</span>
-            <div>
-                <div class="shipped-app-name">{html.escape(a.name)}</div>
-                <p class="shipped-app-gist">{html.escape(a.gist)}</p>
+        dedent(
+            f"""
+            <div class="shipped-app-item">
+                <span>▸</span>
+                <div>
+                    <div class="shipped-app-name">{html.escape(a.name)}</div>
+                    <p class="shipped-app-gist">{html.escape(a.gist)}</p>
+                </div>
             </div>
-        </div>
-        """
+            """
+        ).strip()
         for a in apps
     )
-    return f"""
-    <div class="shipped-apps">
-        <p class="shipped-apps-title">Live apps in this portfolio</p>
-        {items}
-    </div>
-    """
+    return dedent(
+        f"""
+        <div class="shipped-apps">
+            <p class="shipped-apps-title">Live apps in this portfolio</p>
+            {items}
+        </div>
+        """
+    ).strip()
 
 
 def render_sidebar_projects() -> None:
     from shared.projects import ALL_PROJECTS
 
     lines = "".join(f"<div>{html.escape(p.icon)} {html.escape(p.name)}</div>" for p in ALL_PROJECTS)
-    st.markdown(
-        f'<div class="sidebar-nav-list"><strong>All projects</strong>{lines}</div>',
-        unsafe_allow_html=True,
-    )
+    _render_html(f'<div class="sidebar-nav-list"><strong>All projects</strong>{lines}</div>')
 
 
 def render_sidebar_footer() -> None:
-    st.markdown(
+    _render_html(
         """
         <div class="sidebar-footer">
             <a href="https://iamabyjain.com" target="_blank">iamabyjain.com</a><br>
             Abhishek Jain · Cursor · Aug 2026
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -316,7 +322,7 @@ def profile_hero(name: str, tagline: str, pills: list[str] | None = None) -> Non
     if pills:
         chips = "".join(f'<span class="md-chip">{html.escape(p)}</span>' for p in pills)
         chips = f'<div style="display:flex;flex-wrap:wrap;margin-top:1rem">{chips}</div>'
-    st.markdown(
+    _render_html(
         f"""
         <div class="profile-hero">
             <div class="avatar">👤</div>
@@ -324,8 +330,7 @@ def profile_hero(name: str, tagline: str, pills: list[str] | None = None) -> Non
             <p class="tagline">{html.escape(tagline)}</p>
             {chips}
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -334,10 +339,14 @@ def hero(title: str, subtitle: str, pills: list[str] | None = None) -> None:
     if pills:
         chips = "".join(f'<span class="md-chip">{html.escape(p)}</span>' for p in pills)
         chips = f'<div style="margin-top:1rem;display:flex;flex-wrap:wrap">{chips}</div>'
-    st.markdown(
-        f'<div class="md-hero"><h1>{html.escape(title)}</h1>'
-        f'<p>{html.escape(subtitle)}</p>{chips}</div>',
-        unsafe_allow_html=True,
+    _render_html(
+        f"""
+        <div class="md-hero">
+            <h1>{html.escape(title)}</h1>
+            <p>{html.escape(subtitle)}</p>
+            {chips}
+        </div>
+        """
     )
 
 
@@ -349,7 +358,7 @@ def rich_project_card(project: Project) -> None:
         if project.repo_hint
         else ""
     )
-    st.markdown(
+    _render_html(
         f"""
         <div class="proj-card">
             <div class="proj-accent" style="background:linear-gradient(90deg,{project.accent},{project.accent}99)"></div>
@@ -374,10 +383,9 @@ def rich_project_card(project: Project) -> None:
                 {repo_line}
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
 def section_label(text: str) -> None:
-    st.markdown(f'<p class="md-section-label">{html.escape(text)}</p>', unsafe_allow_html=True)
+    _render_html(f'<p class="md-section-label">{html.escape(text)}</p>')
