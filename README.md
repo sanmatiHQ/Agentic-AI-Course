@@ -3,6 +3,8 @@
 Streamlit workspace for **IITM Pravartak / FutureSense** agentic AI coursework —
 assignments, labs, and portfolio projects.
 
+**GitHub:** [sanmatiHQ/Agentic-AI-Course](https://github.com/sanmatiHQ/Agentic-AI-Course)
+
 ## Prerequisites
 
 - Python **3.11**
@@ -22,10 +24,13 @@ Already done if you cloned after initial scaffold.
 ## Run the app
 
 ```bash
+source scripts/activate.sh   # optional — activates .venv in your shell
 bash scripts/run.sh
 ```
 
 Opens **http://localhost:8501** with the multipage hub (`Home.py`).
+
+**Cursor / VS Code:** open `Agentic AI Course.code-workspace` from the Coding Projects folder — the Python interpreter is preconfigured.
 
 Alternative:
 
@@ -81,13 +86,7 @@ Host apps at **no cost** via [share.streamlit.io](https://share.streamlit.io):
 
 ### Deploy steps
 
-1. Initialize git and push to GitHub:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial Agentic AI Course Streamlit scaffold"
-   gh repo create agentic-ai-course --private --source=. --push
-   ```
+1. Repo is live: [github.com/sanmatiHQ/Agentic-AI-Course](https://github.com/sanmatiHQ/Agentic-AI-Course)
 2. Go to [share.streamlit.io](https://share.streamlit.io) → sign in with GitHub.
 3. **Create app** → select your repo → branch `main` → main file **`Home.py`** → Deploy.
 4. For private repos: Community Cloud → Settings → authorize private repo access.
