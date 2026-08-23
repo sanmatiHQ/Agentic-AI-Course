@@ -1,22 +1,17 @@
 # Agentic AI Course
 
-Streamlit portfolio for IITM Pravartak / FutureSense agentic AI coursework.
+Portfolio hub by **Abhishek Jain** — [iamabyjain.com](https://iamabyjain.com)
 
-## Live apps *(this portfolio)*
-
-| App | Description |
-|-----|-------------|
-| **Concept Explainer** | First shipped assignment — multi-audience AI tutor (OpenAI / Claude, pricing, chat, export) |
-| **Abhishek Jain** | Builder profile — also covers GeM Bid System, Bharat Quant, Clerk, IntelliMatrix |
-
-## Planned *(this portfolio)*
+## Live apps
 
 | App | Description |
 |-----|-------------|
-| LangChain Agent Lab | Tool-calling agent with trace viewer |
-| Multi-Agent Orchestrator | Sequential and parallel agent collaboration demo |
-| Workflow Builder | LangGraph / AutoGen state-machine visualiser |
-| Agent Observability Dashboard | Run logs, cost, and latency monitoring |
+| **Abhishek Jain** | Landing page — builder profile & project portfolio |
+| **Concept Explainer** | Multi-audience AI tutor (OpenAI / Claude, pricing, chat, export) |
+
+## Other projects (profile)
+
+GeM Bid System · Bharat Quant · Clerk · IntelliMatrix · Agentic AI Course Portfolio
 
 ## Local run
 
@@ -29,8 +24,6 @@ pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-Open `http://localhost:8501` in your browser.
-
 ## Cloud deploy
 
-Deploy on [Streamlit Community Cloud](https://share.streamlit.io) — connect the GitHub repo, branch `main`, entry file `streamlit_app.py`.
+[Streamlit Community Cloud](https://share.streamlit.io) — repo `Agentic-AI-Course`, branch `main`, entry `streamlit_app.py`.
