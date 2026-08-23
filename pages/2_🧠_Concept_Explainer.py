@@ -10,6 +10,7 @@ from shared.chat_persistence import hydrate, persist, persistence_mode_label
 from shared.chat_store import (
     MAX_SAVED_CHATS,
     archive_list,
+    format_markdown,
     format_transcript,
     load_chat,
     on_first_message,
@@ -34,6 +35,7 @@ from shared.secrets_config import (
     hosted_key_for,
     resolve_api_key,
 )
+from shared.term_mapping import build_term_maps, term_maps_to_markdown
 from shared.ui import (
     ce_audience_hint,
     ce_empty_chat,
@@ -62,6 +64,24 @@ def _format_transcript(messages: list[dict[str, str]]) -> str:
         input_tokens=st.session_state.ce_input_tokens,
         output_tokens=st.session_state.ce_output_tokens,
     )
+
+
+def _format_markdown(messages: list[dict[str, str]], *, title: str = "") -> str:
+    return format_markdown(
+        messages,
+        title=title,
+        input_tokens=st.session_state.ce_input_tokens,
+        output_tokens=st.session_state.ce_output_tokens,
+        term_maps=st.session_state.get("ce_term_maps") or None,
+    )
+
+
+def _render_term_maps() -> None:
+    maps = st.session_state.get("ce_term_maps") or []
+    if not maps:
+        return
+    with st.expander("Keyword & vector map", expanded=False):
+        st.markdown(term_maps_to_markdown(maps))
 
 
 def _user_turn_count() -> int:
@@ -163,6 +183,18 @@ def _reply(user_text: str, active_key: str) -> bool:
     _record_usage(result.input_tokens, result.output_tokens)
     st.session_state.ce_messages.append({"role": "user", "content": text})
     st.session_state.ce_messages.append({"role": "assistant", "content": result.content})
+
+    if is_first:
+        try:
+            st.session_state.ce_term_maps = build_term_maps(
+                st.session_state.ce_provider,
+                active_key,
+                st.session_state.ce_selected_model or "",
+                text,
+            )
+        except Exception:
+            st.session_state.ce_term_maps = []
+
     upsert_current_chat()
     return True
 
@@ -189,6 +221,7 @@ _defaults = {
     "ce_chat_archive": [],
     "ce_active_chat_id": None,
     "ce_chat_started_at": None,
+    "ce_term_maps": [],
 }
 for _k, _v in _defaults.items():
     if _k not in st.session_state:
@@ -259,7 +292,7 @@ with st.sidebar:
             updated = item.get("updated_at", "")[:16].replace("T", " ")
             turns = sum(1 for m in item.get("messages", []) if m.get("role") == "user")
             is_active = item["id"] == st.session_state.get("ce_active_chat_id")
-            row1, row2 = st.columns([2, 1])
+            row1, row2, row3 = st.columns([2, 1, 1])
             with row1:
                 btn_label = f"{'● ' if is_active else ''}{label}"
                 if st.button(btn_label, key=f"load_{item['id']}", use_container_width=True):
@@ -267,7 +300,7 @@ with st.sidebar:
                     st.rerun()
             with row2:
                 st.download_button(
-                    "⬇",
+                    "⬇ txt",
                     data=format_transcript(
                         item["messages"],
                         title=item.get("title", ""),
@@ -275,7 +308,21 @@ with st.sidebar:
                         output_tokens=int(item.get("output_tokens", 0)),
                     ),
                     file_name=f"chat_{item['id']}.txt",
-                    key=f"dl_{item['id']}",
+                    key=f"dl_txt_{item['id']}",
+                    use_container_width=True,
+                )
+            with row3:
+                st.download_button(
+                    "⬇ md",
+                    data=format_markdown(
+                        item["messages"],
+                        title=item.get("title", ""),
+                        input_tokens=int(item.get("input_tokens", 0)),
+                        output_tokens=int(item.get("output_tokens", 0)),
+                        term_maps=item.get("term_maps"),
+                    ),
+                    file_name=f"chat_{item['id']}.md",
+                    key=f"dl_md_{item['id']}",
                     use_container_width=True,
                 )
             st.caption(f"{updated} · {turns} turn(s)")
@@ -295,12 +342,21 @@ with st.sidebar:
     )
 
     if st.session_state.ce_messages:
-        st.download_button(
-            "Download chat",
-            data=_format_transcript(st.session_state.ce_messages),
-            file_name=f"chat_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
-            use_container_width=True,
-        )
+        dl_txt, dl_md = st.columns(2)
+        with dl_txt:
+            st.download_button(
+                "Download .txt",
+                data=_format_transcript(st.session_state.ce_messages),
+                file_name=f"chat_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
+                use_container_width=True,
+            )
+        with dl_md:
+            st.download_button(
+                "Download .md",
+                data=_format_markdown(st.session_state.ce_messages),
+                file_name=f"chat_{datetime.now().strftime('%Y%m%d_%H%M')}.md",
+                use_container_width=True,
+            )
     if st.button("New chat", use_container_width=True):
         start_new_chat()
         st.rerun()
@@ -334,14 +390,23 @@ else:
 ce_past_chats_panel(archive_list(), st.session_state.get("ce_active_chat_id"))
 
 if st.session_state.ce_messages:
-    dl1, dl2 = st.columns([3, 1])
+    dl1, dl2, dl3 = st.columns([2, 1, 1])
     with dl2:
         st.download_button(
-            "⬇ Download this chat",
+            "⬇ .txt",
             data=_format_transcript(st.session_state.ce_messages),
             file_name=f"chat_{datetime.now().strftime('%Y%m%d_%H%M')}.txt",
             use_container_width=True,
         )
+    with dl3:
+        st.download_button(
+            "⬇ .md",
+            data=_format_markdown(st.session_state.ce_messages),
+            file_name=f"chat_{datetime.now().strftime('%Y%m%d_%H%M')}.md",
+            use_container_width=True,
+        )
+
+_render_term_maps()
 
 render_html('<span class="ce-chat-workspace-marker"></span>')
 

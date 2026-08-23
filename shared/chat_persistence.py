@@ -37,6 +37,7 @@ def build_bundle() -> dict[str, Any]:
         "output_tokens": int(st.session_state.get("ce_output_tokens", 0)),
         "request_count": int(st.session_state.get("ce_request_count", 0)),
         "chat_started_at": st.session_state.get("ce_chat_started_at"),
+        "term_maps": list(st.session_state.get("ce_term_maps", [])),
     }
 
 
@@ -50,6 +51,7 @@ def apply_bundle(bundle: dict[str, Any]) -> None:
     st.session_state.ce_output_tokens = int(bundle.get("output_tokens", 0))
     st.session_state.ce_request_count = int(bundle.get("request_count", 0))
     st.session_state.ce_chat_started_at = bundle.get("chat_started_at")
+    st.session_state.ce_term_maps = list(bundle.get("term_maps", []))
 
 
 def _save_local_file(bundle: dict[str, Any]) -> None:

@@ -109,3 +109,11 @@ def chat(
         input_tokens=resp.usage.input_tokens,
         output_tokens=resp.usage.output_tokens,
     )
+
+
+def embed_texts(api_key: str, texts: list[str], *, model: str = "text-embedding-3-small") -> list[list[float]]:
+    if not texts:
+        return []
+    client = openai.OpenAI(api_key=api_key)
+    resp = client.embeddings.create(model=model, input=texts)
+    return [row.embedding for row in resp.data]

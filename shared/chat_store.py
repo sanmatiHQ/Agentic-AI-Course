@@ -27,6 +27,43 @@ def chat_title(messages: list[dict[str, str]], *, max_len: int = 42) -> str:
     return "Untitled chat"
 
 
+def format_markdown(
+    messages: list[dict[str, str]],
+    *,
+    title: str = "",
+    input_tokens: int = 0,
+    output_tokens: int = 0,
+    term_maps: list[dict] | None = None,
+) -> str:
+    heading = title or chat_title(messages)
+    lines = [
+        f"# Concept Explainer — {heading}",
+        "",
+        f"_Exported {datetime.now().isoformat(timespec='seconds')}_  ",
+        "_Abhishek Jain · [iamabyjain.com](https://iamabyjain.com)_",
+        "",
+    ]
+    if input_tokens or output_tokens:
+        lines.append(f"**Tokens:** {input_tokens + output_tokens:,} ({input_tokens:,} in · {output_tokens:,} out)")
+        lines.append("")
+    if term_maps:
+        from shared.term_mapping import term_maps_to_markdown
+
+        lines.append(term_maps_to_markdown(term_maps))
+    lines.append("---")
+    lines.append("")
+    for msg in messages:
+        role = msg["role"]
+        if role == "user":
+            lines.append(f"## You")
+        else:
+            lines.append(f"## Assistant")
+        lines.append("")
+        lines.append(msg["content"])
+        lines.append("")
+    return "\n".join(lines)
+
+
 def format_transcript(
     messages: list[dict[str, str]],
     *,
@@ -73,6 +110,7 @@ def snapshot_current_chat() -> dict[str, Any]:
         "input_tokens": int(st.session_state.get("ce_input_tokens", 0)),
         "output_tokens": int(st.session_state.get("ce_output_tokens", 0)),
         "request_count": int(st.session_state.get("ce_request_count", 0)),
+        "term_maps": list(st.session_state.get("ce_term_maps", [])),
     }
 
 
@@ -104,6 +142,7 @@ def load_chat(chat_id: str) -> None:
         st.session_state.ce_output_tokens = int(item.get("output_tokens", 0))
         st.session_state.ce_request_count = int(item.get("request_count", 0))
         st.session_state.ce_chat_started_at = item.get("created_at")
+        st.session_state.ce_term_maps = list(item.get("term_maps", []))
         set_active_chat_id(chat_id)
         persist()
         return
@@ -117,6 +156,7 @@ def start_new_chat() -> None:
     st.session_state.ce_output_tokens = 0
     st.session_state.ce_request_count = 0
     st.session_state.ce_chat_started_at = None
+    st.session_state.ce_term_maps = []
     set_active_chat_id(None)
     persist()
 
