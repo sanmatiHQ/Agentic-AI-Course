@@ -4,10 +4,10 @@ import streamlit as st
 
 from shared.projects import ALL_PROJECTS, COURSE_PORTFOLIO, INDEPENDENT_PROJECTS
 from shared.ui import (
+    bento_metrics,
     inject_material_theme,
     profile_hero,
-    render_sidebar_footer,
-    render_sidebar_projects,
+    render_sidebar_minimal,
     rich_project_card,
     section_label,
 )
@@ -15,54 +15,46 @@ from shared.ui import (
 inject_material_theme()
 
 with st.sidebar:
-    render_sidebar_projects()
-    render_sidebar_footer()
+    render_sidebar_minimal()
 
 profile_hero(
     "Abhishek Jain",
-    "Builder of agentic AI systems, GovTech intelligence, and tools that turn complexity into clarity.",
-    pills=["iamabyjain.com", "IITM Pravartak × FutureSense", "Cursor", "Streamlit Cloud"],
+    "Agentic AI · GovTech · Quant · Productivity systems",
+    pills=["iamabyjain.com", "IITM Pravartak", "Cursor"],
 )
 
-col_a, col_b = st.columns(2)
-with col_a:
-    st.link_button("🌐 iamabyjain.com", "https://iamabyjain.com", use_container_width=True)
-with col_b:
-    if st.button("🧠 Concept Explainer", use_container_width=True, type="primary"):
+c1, c2 = st.columns(2)
+with c1:
+    st.link_button("Website", "https://iamabyjain.com", use_container_width=True)
+with c2:
+    if st.button("Concept Explainer →", use_container_width=True, type="primary"):
         st.switch_page("pages/2_🧠_Concept_Explainer.py")
 
 st.markdown(
-    """
-I'm **Abhishek Jain** — I ship production AI across **government procurement**, **quant finance**,
-**agentic AI education**, and **personal productivity**. This Streamlit hub is my **live course portfolio**;
-everything else listed below is built in parallel across separate codebases.
-"""
+    "Production AI builder — procurement intelligence, quant finance, agentic education, "
+    "and personal ops. **This repo** is the live course portfolio; other ventures run separately."
 )
 
-section_label("① Course portfolio · this repo")
+bento_metrics([
+    (str(len(ALL_PROJECTS)), "Projects"),
+    (str(len(COURSE_PORTFOLIO.shipped_apps)), "Live apps"),
+    ("IITM", "Course"),
+])
+
+section_label("Course portfolio")
 rich_project_card(COURSE_PORTFOLIO)
 
-section_label("② Independent ventures")
-for proj in INDEPENDENT_PROJECTS:
-    rich_project_card(proj)
+section_label("Independent ventures")
 
-st.divider()
-c1, c2, c3 = st.columns(3)
-with c1:
-    st.metric("Total projects", len(ALL_PROJECTS))
-with c2:
-    st.metric("Live apps", len(COURSE_PORTFOLIO.shipped_apps))
-with c3:
-    st.metric("Course", "IITM Pravartak")
+# Bento 2-column grid for ventures
+rows = [INDEPENDENT_PROJECTS[i : i + 2] for i in range(0, len(INDEPENDENT_PROJECTS), 2)]
+for row in rows:
+    cols = st.columns(len(row))
+    for col, proj in zip(cols, row):
+        with col:
+            rich_project_card(proj)
 
-with st.expander("📚 Course orientation notes (merged from FutureSense repo)"):
-    st.markdown(
-        "Full orientation notes for *AI Agent Workflows and Agentic Systems* — 16 modules, "
-        "schedule, LMS links, evaluation criteria — are in "
-        "`docs/course-orientation-notes.md` in this repo."
-    )
+with st.expander("Course orientation notes"):
+    st.caption("Merged from FutureSense repo → `docs/course-orientation-notes.md`")
 
-st.caption(
-    "Abhishek Jain · 23 Aug 2026 · Cursor · [iamabyjain.com](https://iamabyjain.com) · "
-    "Merged: Agentic-AI-Course + FutureSense notes"
-)
+st.caption("[iamabyjain.com](https://iamabyjain.com) · Abhishek Jain · Aug 2026")
