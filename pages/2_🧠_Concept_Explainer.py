@@ -116,7 +116,7 @@ hero(
 )
 
 if not st.session_state.ce_validated:
-    _render_html(
+    render_html(
         """
         <div class="md-card">
             <h3>Get started</h3>
