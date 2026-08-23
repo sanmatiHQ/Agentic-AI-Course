@@ -2,6 +2,8 @@
 
 import streamlit as st
 
+from shared.ui import inject_material_theme, render_sidebar_brand
+
 st.set_page_config(
     page_title="Agentic AI Course",
     page_icon="🤖",
@@ -9,7 +11,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-home = st.Page("Home.py", title="Home", icon="🤖", default=True)
+inject_material_theme()
+
+with st.sidebar:
+    render_sidebar_brand()
+
+home = st.Page("Home.py", title="Home", icon="🏠", default=True)
 concept = st.Page(
     "pages/2_🧠_Concept_Explainer.py",
     title="Concept Explainer",

@@ -8,7 +8,7 @@ import streamlit as st
 
 from shared.llm_providers import chat, validate_and_list_models
 from shared.prompts import FOLLOWUP_PROMPT, SYSTEM_PROMPT
-from shared.ui import hero, inject_base_css
+from shared.ui import hero, inject_material_theme, render_sidebar_footer, section_label
 
 
 def _format_transcript(messages: list[dict[str, str]]) -> str:
@@ -26,7 +26,7 @@ def _format_transcript(messages: list[dict[str, str]]) -> str:
     return "\n".join(lines)
 
 
-inject_base_css()
+inject_material_theme()
 
 # ── Session defaults ──────────────────────────────────────────────────────────
 _defaults = {
@@ -43,7 +43,7 @@ for _k, _v in _defaults.items():
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("##### ⚙️ Setup")
+    section_label("Setup")
     provider = st.radio(
         "Provider",
         options=["openai", "anthropic"],
@@ -83,7 +83,7 @@ with st.sidebar:
 
     if st.session_state.ce_validated and st.session_state.ce_models:
         st.markdown("---")
-        st.markdown("##### 🤖 Model")
+        section_label("Model")
         model_options = {m.id: m for m in st.session_state.ce_models}
         selected = st.selectbox(
             "Model",
@@ -104,6 +104,8 @@ with st.sidebar:
         st.session_state.ce_messages = []
         st.rerun()
 
+    render_sidebar_footer()
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 hero(
     "Concept Explainer",
@@ -115,9 +117,9 @@ hero(
 if not st.session_state.ce_validated:
     st.markdown(
         """
-        <div class="card">
-            <h3>👋 Get started</h3>
-            <p>Add your OpenAI or Claude API key in the sidebar, then click
+        <div class="md-card">
+            <h3>Get started</h3>
+            <p>Add your OpenAI or Claude API key above, then tap
             <strong>Validate & load models</strong>. Your key stays in this browser session only.</p>
         </div>
         """,

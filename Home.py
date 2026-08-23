@@ -2,9 +2,12 @@
 
 import streamlit as st
 
-from shared.ui import hero, inject_base_css
+from shared.ui import hero, inject_material_theme, render_sidebar_footer
 
-inject_base_css()
+inject_material_theme()
+
+with st.sidebar:
+    render_sidebar_footer()
 
 hero(
     "Agentic AI Course",

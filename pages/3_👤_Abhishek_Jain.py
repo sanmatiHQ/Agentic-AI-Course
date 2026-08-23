@@ -2,9 +2,12 @@
 
 import streamlit as st
 
-from shared.ui import hero, inject_base_css, project_card
+from shared.ui import hero, inject_material_theme, project_card, render_sidebar_footer
 
-inject_base_css()
+inject_material_theme()
+
+with st.sidebar:
+    render_sidebar_footer()
 
 hero(
     "Abhishek Jain",
@@ -26,7 +29,12 @@ and collaborations — from operations strategy to deep-tech experiments in Nort
 )
 
 st.divider()
-st.subheader("Projects I am building")
+st.markdown(
+    """
+    <p class="md-section-label">Projects I am building</p>
+    """,
+    unsafe_allow_html=True,
+)
 
 project_card(
     "Agentic AI Course Portfolio",
