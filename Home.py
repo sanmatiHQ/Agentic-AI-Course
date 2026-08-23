@@ -63,3 +63,8 @@ st.subheader("Status check")
 if st.button("Run hello check", type="primary"):
     st.success("Streamlit is working. You're ready to build.")
     st.balloons()
+
+st.caption(
+    "Built by Abhishek Jain as part of Assignment on 23rd August 2026 "
+    "on Cursor using the latest model."
+)

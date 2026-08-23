@@ -11,7 +11,12 @@ from shared.prompts import FOLLOWUP_PROMPT, SYSTEM_PROMPT
 
 
 def _format_transcript(messages: list[dict[str, str]]) -> str:
-    lines = [f"Concept Explainer — {datetime.now().isoformat(timespec='seconds')}", "=" * 60, ""]
+    lines = [
+        f"Concept Explainer — {datetime.now().isoformat(timespec='seconds')}",
+        "Built by Abhishek Jain · Assignment · 23 August 2026 · Cursor · latest model",
+        "=" * 60,
+        "",
+    ]
     for msg in messages:
         role = msg["role"].upper()
         lines.append(f"[{role}]")
@@ -100,6 +105,10 @@ with st.sidebar:
 # ── Main layout ─────────────────────────────────────────────────────────────────
 st.title("Concept Explainer")
 st.caption("Explain any concept for SMEs, domain experts, and technical teams.")
+st.caption(
+    "_Built by Abhishek Jain as part of Assignment on 23rd August 2026 "
+    "on Cursor using the latest model._"
+)
 
 if not st.session_state.ce_validated:
     st.info("Enter your OpenAI or Claude API key in the sidebar and click **Validate key & load models** to begin.")
@@ -169,3 +178,8 @@ with right:
             mime="text/plain",
             use_container_width=True,
         )
+
+st.divider()
+st.caption(
+    "Built by Abhishek Jain · Assignment · 23 August 2026 · Cursor · latest model"
+)
