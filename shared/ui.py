@@ -32,6 +32,10 @@ def _render_html(fragment: str) -> None:
     st.html(dedent(fragment).strip())
 
 
+def render_html(fragment: str) -> None:
+    _render_html(fragment)
+
+
 def inject_material_theme() -> None:
     st.markdown(
         f"""
@@ -164,6 +168,18 @@ def inject_material_theme() -> None:
             padding: 0.25rem 0.75rem; border-radius: 100px;
         }}
         .proj-gist {{ color: {C_ON_SURFACE_VARIANT}; font-size: 0.9375rem; line-height: 1.65; margin: 0 0 1rem; }}
+
+        .md-card {{
+            background: {C_SURFACE};
+            border: 1px solid {C_OUTLINE_VARIANT};
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.08);
+        }}
+        .md-card h3 {{ margin: 0 0 0.5rem; font-size: 1rem; color: {C_ON_SURFACE}; }}
+        .md-card p {{ margin: 0; color: {C_ON_SURFACE_VARIANT}; line-height: 1.6; }}
+
         .proj-meta {{ display: grid; gap: 0.6rem; }}
         .proj-meta-row {{
             background: {C_SURFACE_CONTAINER};

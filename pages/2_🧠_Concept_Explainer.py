@@ -8,7 +8,7 @@ import streamlit as st
 
 from shared.llm_providers import chat, validate_and_list_models
 from shared.prompts import FOLLOWUP_PROMPT, SYSTEM_PROMPT
-from shared.ui import hero, inject_material_theme, render_sidebar_footer, render_sidebar_projects, section_label
+from shared.ui import hero, inject_material_theme, render_html, render_sidebar_footer, render_sidebar_projects, section_label
 
 
 def _format_transcript(messages: list[dict[str, str]]) -> str:
@@ -116,15 +116,14 @@ hero(
 )
 
 if not st.session_state.ce_validated:
-    st.markdown(
+    _render_html(
         """
         <div class="md-card">
             <h3>Get started</h3>
             <p>Add your OpenAI or Claude API key above, then tap
-            <strong>Validate & load models</strong>. Your key stays in this browser session only.</p>
+            <strong>Validate &amp; load models</strong>. Your key stays in this browser session only.</p>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
     st.stop()
 
