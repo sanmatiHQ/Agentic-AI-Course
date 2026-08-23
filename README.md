@@ -1,15 +1,15 @@
 # Agentic AI Course
 
-Apps developed in this repository.
+Streamlit portfolio for IITM Pravartak / FutureSense agentic AI coursework.
 
-## Live apps
+## Live apps *(this portfolio)*
 
 | App | Description |
 |-----|-------------|
-| **Concept Explainer** | Multi-audience AI tutor — OpenAI or Claude, model picker with pricing, concept explanations, follow-up chat, transcript download |
-| **Abhishek Jain** | Builder profile, active projects, link to [iamabyjain.com](https://iamabyjain.com) |
+| **Concept Explainer** | First shipped assignment — multi-audience AI tutor (OpenAI / Claude, pricing, chat, export) |
+| **Abhishek Jain** | Builder profile — also covers GeM Bid System, Bharat Quant, Clerk, IntelliMatrix |
 
-## Planned
+## Planned *(this portfolio)*
 
 | App | Description |
 |-----|-------------|

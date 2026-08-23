@@ -17,8 +17,8 @@ st.link_button("Visit my website →", "https://iamabyjain.com", use_container_w
 st.markdown(
     """
 I'm **Abhishek Jain** — I build production-minded AI systems and turn complex ideas into
-shippable products. This portfolio is part of my **Agentic AI Course** work, developed with
-**Cursor** and deployed on **Streamlit Community Cloud**.
+shippable products. This Streamlit hub is one slice of that work, developed with **Cursor**
+and deployed on **Streamlit Community Cloud**.
 
 My site [**iamabyjain.com**](https://iamabyjain.com) is where I consolidate ventures, ideas,
 and collaborations — from operations strategy to deep-tech experiments in Northeast India and beyond.
@@ -29,39 +29,41 @@ st.divider()
 st.subheader("Projects I am building")
 
 project_card(
-    "Concept Explainer",
-    "Multi-audience AI tutor — explain any concept for SMEs, domain experts, and engineers. "
-    "OpenAI & Claude BYOK, live model pricing, follow-up chat, transcript export.",
-    "Live · this repo",
+    "Agentic AI Course Portfolio",
+    "Hands-on Streamlit apps for IITM Pravartak / FutureSense — each course module becomes "
+    "a deployable app. **Concept Explainer** (live) is the first shipped assignment: multi-audience "
+    "AI tutor with OpenAI & Claude BYOK, model pricing, follow-up chat, and transcript export. "
+    "More modules (LangChain agents, multi-agent orchestration, observability) landing here as they ship.",
+    "Active · this repo",
 )
 
 project_card(
-    "GeM Bid Intelligence System",
-    "Multi-agent platform for Government e-Marketplace (GeM) procurement — bid extraction, "
-    "enrichment, contracts, marketplace intelligence, and tenant dashboards. "
-    "Python/FastAPI mesh on Cloud Run + MongoDB Atlas.",
+    "GeM Bid System",
+    "Multi-agent intelligence platform for India's Government e-Marketplace — automated bid "
+    "extraction, enrichment, contract analytics, marketplace intel, and tenant dashboards. "
+    "Python/FastAPI mesh on Cloud Run with MongoDB Atlas.",
     "In production",
 )
 
 project_card(
-    "Agentic AI Course Portfolio",
-    "Hands-on Streamlit apps for IITM Pravartak / FutureSense — each course module becomes "
-    "a deployable app (LangChain agents, multi-agent orchestration, observability).",
-    "Active",
-)
-
-project_card(
-    "Distributed GeM Crawler",
-    "Standalone crawler fleet for parallel GeM data collection — demand via MongoDB, "
-    "promoted results back to platform agents.",
-    "In design",
+    "Bharat Quant",
+    "Quantitative research and execution engine focused on Indian markets — systematic signals, "
+    "backtesting, and data-driven trading workflows built for Bharat-specific market structure.",
+    "In development",
 )
 
 project_card(
     "Clerk",
-    "Local-first assistant for mail, meetings, files, and OEM price tracking — "
-    "personal ops bot, separate from the cloud mesh.",
+    "Local-first personal ops assistant — mail, meetings, files, and OEM price tracking on your "
+    "machine. Lightweight daily workflow bot, separate from the cloud agent mesh.",
     "Early build",
+)
+
+project_card(
+    "IntelliMatrix",
+    "Intelligence layer that connects structured data, embeddings, and decision workflows — "
+    "turning raw business signals into actionable matrices for strategy and operations teams.",
+    "In design",
 )
 
 st.divider()

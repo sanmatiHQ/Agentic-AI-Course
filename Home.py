@@ -29,12 +29,16 @@ A **living portfolio** of Streamlit apps — one per course module — so every 
 | **Ship** | GitHub → Streamlit Community Cloud auto-deploy |
 | **Tooling** | Cursor with the latest model |
 
-### Apps in this portfolio
+### Apps in this portfolio *(Agentic AI Course)*
 
-→ **Concept Explainer** — multi-audience AI tutor (live)  
-→ **Abhishek Jain** — builder profile & projects at [iamabyjain.com](https://iamabyjain.com)
+This repo **is** the Agentic AI Course portfolio. Each page is a shipped assignment or module.
 
-#### 🔜 Coming next
+| App | Status |
+|-----|--------|
+| **Concept Explainer** | Live — multi-audience AI tutor (first assignment) |
+| **Abhishek Jain** | Profile & wider project map → [iamabyjain.com](https://iamabyjain.com) |
+
+#### 🔜 Coming next *(in this portfolio)*
 
 | Module | Planned app |
 |--------|-------------|
