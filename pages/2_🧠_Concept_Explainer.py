@@ -217,6 +217,7 @@ if not active_key:
 
 ce_topbar(st.session_state.ce_provider, st.session_state.ce_selected_model or "")
 ce_audience_hint(_selected_audiences())
+render_html('<span class="ce-chat-workspace-marker"></span>')
 
 if not st.session_state.ce_messages:
     ce_empty_chat()

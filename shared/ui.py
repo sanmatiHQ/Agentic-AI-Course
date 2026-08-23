@@ -713,12 +713,121 @@ def ce_audience_hint(audiences: list[str]) -> None:
 
 
 def inject_ce_chat_layout() -> None:
-    """Narrow, chat-first main column."""
+    """Fluid, responsive chat workspace — scales from mobile to ultrawide."""
     st.markdown(
-        """
+        f"""
         <style>
-        .block-container { max-width: 780px !important; padding-bottom: 5rem !important; }
-        [data-testid="stChatInput"] { border-radius: 16px !important; }
+        /* ── Fluid page shell ── */
+        .main .block-container {{
+            max-width: min(1320px, 94vw) !important;
+            padding-top: 1rem !important;
+            padding-bottom: 7rem !important;
+            padding-left: clamp(0.75rem, 2.5vw, 2rem) !important;
+            padding-right: clamp(0.75rem, 2.5vw, 2rem) !important;
+        }}
+
+        .main .block-container .ce-chat-workspace-marker {{
+            display: none;
+        }}
+
+        /* ── Chat messages: full usable width (Concept Explainer page) ── */
+        .main .block-container [data-testid="stChatMessage"] {{
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-bottom: 0.85rem !important;
+            padding: clamp(0.85rem, 1.5vw, 1.15rem) clamp(1rem, 2vw, 1.35rem) !important;
+        }}
+
+        /* ── Topbar scales ── */
+        .ce-topbar {{
+            padding: clamp(0.85rem, 2vw, 1.25rem) clamp(1rem, 2.5vw, 1.75rem) !important;
+        }}
+        .ce-topbar h1 {{ font-size: clamp(1.15rem, 2.2vw, 1.45rem) !important; }}
+
+        /* ── Example chips ── */
+        .main .block-container [data-testid="column"] {{
+            min-width: 0 !important;
+        }}
+
+        /* User turns — compact bubble on wide screens */
+        @media (min-width: 768px) {{
+            .main .block-container [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {{
+                max-width: min(520px, 72%) !important;
+                margin-left: auto !important;
+                margin-right: 0 !important;
+            }}
+        }}
+
+        /* Assistant turns — full prose column */
+        .main .block-container [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {{
+            max-width: 100% !important;
+        }}
+
+        /* ── Readable long-form markdown in answers ── */
+        .main .block-container [data-testid="stMarkdownContainer"] {{
+            max-width: none !important;
+        }}
+        .main .block-container [data-testid="stMarkdownContainer"] h1,
+        .main .block-container [data-testid="stMarkdownContainer"] h2 {{
+            font-size: clamp(1.05rem, 1.8vw, 1.3rem) !important;
+            font-weight: 700 !important;
+            margin: 1.1rem 0 0.45rem !important;
+            color: {C_ON_SURFACE} !important;
+            letter-spacing: -0.01em;
+        }}
+        .main .block-container [data-testid="stMarkdownContainer"] h3 {{
+            font-size: clamp(0.95rem, 1.4vw, 1.1rem) !important;
+            font-weight: 700 !important;
+            margin: 0.85rem 0 0.35rem !important;
+        }}
+        .main .block-container [data-testid="stMarkdownContainer"] p,
+        .main .block-container [data-testid="stMarkdownContainer"] li {{
+            font-size: clamp(0.875rem, 1.05vw, 0.95rem) !important;
+            line-height: 1.7 !important;
+            color: {C_ON_SURFACE_VARIANT} !important;
+        }}
+        .main .block-container [data-testid="stMarkdownContainer"] ul,
+        .main .block-container [data-testid="stMarkdownContainer"] ol {{
+            padding-left: 1.25rem !important;
+            margin: 0.35rem 0 0.65rem !important;
+        }}
+        .main .block-container [data-testid="stMarkdownContainer"] strong {{
+            color: {C_ON_SURFACE} !important;
+        }}
+
+        /* ── Pinned chat input matches content width ── */
+        [data-testid="stBottomBlock"] {{
+            max-width: min(1320px, 94vw) !important;
+            margin: 0 auto !important;
+            padding-left: clamp(0.75rem, 2.5vw, 2rem) !important;
+            padding-right: clamp(0.75rem, 2.5vw, 2rem) !important;
+        }}
+        [data-testid="stChatInput"] {{
+            border-radius: 16px !important;
+        }}
+        [data-testid="stChatInput"] textarea {{
+            font-size: clamp(0.875rem, 1vw, 0.95rem) !important;
+            min-height: 52px !important;
+        }}
+
+        /* ── Ultrawide: optional two-tone reading column ── */
+        @media (min-width: 1400px) {{
+            .main .block-container {{
+                max-width: min(1480px, 88vw) !important;
+            }}
+            .main .block-container [data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {{
+                padding-left: clamp(1rem, 2vw, 1.5rem) !important;
+                padding-right: clamp(1rem, 3vw, 2.5rem) !important;
+            }}
+        }}
+
+        @media (max-width: 640px) {{
+            .ce-topbar {{
+                flex-direction: column;
+                align-items: flex-start !important;
+            }}
+            .ce-audience-hint {{ font-size: 0.72rem !important; }}
+        }}
         </style>
         """,
         unsafe_allow_html=True,
