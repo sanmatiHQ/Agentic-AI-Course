@@ -1,29 +1,33 @@
 # Agentic AI Course
 
-Portfolio hub by **Abhishek Jain** — [iamabyjain.com](https://iamabyjain.com)
+**Abhishek Jain** · [iamabyjain.com](https://iamabyjain.com)  
+Streamlit portfolio for IITM Pravartak × FutureSense · merged with course orientation notes.
 
-## Live apps
+## Projects
 
-| App | Description |
-|-----|-------------|
-| **Abhishek Jain** | Landing page — builder profile & project portfolio |
-| **Concept Explainer** | Multi-audience AI tutor (OpenAI / Claude, pricing, chat, export) |
-
-## Other projects (profile)
-
-GeM Bid System · Bharat Quant · Clerk · IntelliMatrix · Agentic AI Course Portfolio
+| # | Project | Where |
+|---|---------|--------|
+| 1 | **Agentic AI Course Portfolio** | This repo (Streamlit Cloud) |
+| ↳ | Concept Explainer *(live app)* | Sidebar → Concept Explainer |
+| 2 | GeM Bid System | Private monorepo |
+| 3 | Bharat Quant | In development |
+| 4 | Clerk | sanmatiHQ/clerk |
+| 5 | IntelliMatrix | In design |
 
 ## Local run
 
 ```bash
 git clone https://github.com/sanmatiHQ/Agentic-AI-Course.git
 cd Agentic-AI-Course
-python3.11 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python3.11 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 streamlit run streamlit_app.py
 ```
 
-## Cloud deploy
+## Cloud
 
-[Streamlit Community Cloud](https://share.streamlit.io) — repo `Agentic-AI-Course`, branch `main`, entry `streamlit_app.py`.
+[Streamlit Community Cloud](https://share.streamlit.io) → `Agentic-AI-Course` → `streamlit_app.py`
+
+## Docs
+
+Course orientation notes: `docs/course-orientation-notes.md`

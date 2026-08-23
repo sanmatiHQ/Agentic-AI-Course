@@ -8,7 +8,7 @@ import streamlit as st
 
 from shared.llm_providers import chat, validate_and_list_models
 from shared.prompts import FOLLOWUP_PROMPT, SYSTEM_PROMPT
-from shared.ui import hero, inject_material_theme, render_sidebar_footer, section_label
+from shared.ui import hero, inject_material_theme, render_sidebar_footer, render_sidebar_projects, section_label
 
 
 def _format_transcript(messages: list[dict[str, str]]) -> str:
@@ -43,6 +43,7 @@ for _k, _v in _defaults.items():
 
 # ── Sidebar ───────────────────────────────────────────────────────────────────
 with st.sidebar:
+    render_sidebar_projects()
     section_label("Setup")
     provider = st.radio(
         "Provider",

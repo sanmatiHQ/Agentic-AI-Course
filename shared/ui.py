@@ -1,4 +1,4 @@
-"""Material Design 3 UI — vibrant Google-inspired theme."""
+"""Material Design 3 — bright Google-inspired theme & components."""
 
 from __future__ import annotations
 
@@ -6,47 +6,52 @@ import html
 
 import streamlit as st
 
-# Vibrant palette (Google Material + rich dark surfaces)
-C_BLUE = "#4285F4"
-C_GREEN = "#34A853"
-C_YELLOW = "#FBBC04"
-C_RED = "#EA4335"
-C_PURPLE = "#A142F4"
-C_TEAL = "#00BCD4"
-C_PRIMARY = "#8AB4F8"
-C_ON_SURFACE = "#F1F3F4"
-C_ON_VARIANT = "#BDC1C6"
-C_SURFACE = "#0d1b2a"
-C_SURFACE2 = "#1b263b"
-C_SURFACE3 = "#243b55"
-C_OUTLINE = "#415a77"
+from shared.projects import Project, ShippedApp
+
+# MD3 light palette (Google Material You)
+C_PRIMARY = "#1A73E8"
+C_PRIMARY_CONTAINER = "#D3E3FD"
+C_ON_PRIMARY = "#FFFFFF"
+C_SURFACE = "#FFFFFF"
+C_SURFACE_DIM = "#F8F9FA"
+C_SURFACE_CONTAINER = "#F0F4F9"
+C_ON_SURFACE = "#1F1F1F"
+C_ON_SURFACE_VARIANT = "#444746"
+C_OUTLINE = "#747775"
+C_OUTLINE_VARIANT = "#C4C7C5"
+C_GREEN = "#188038"
+C_YELLOW = "#F9AB00"
+C_RED = "#D93025"
+C_PURPLE = "#9334E6"
+C_TEAL = "#007B83"
 
 
 def inject_material_theme() -> None:
     st.markdown(
         f"""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Flex:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,400;6..144,500;6..144;700&family=Roboto:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0');
 
         html, body, [class*="css"] {{
-            font-family: 'Roboto Flex', 'Roboto', sans-serif !important;
+            font-family: 'Google Sans Flex', 'Roboto', sans-serif !important;
         }}
 
-        /* ── Colourful app background (not flat black) ── */
+        /* ── Bright app shell ── */
         .stApp {{
-            background: linear-gradient(145deg, #0d1b2a 0%, #1b2838 35%, #1a1a40 70%, #0d2137 100%) !important;
+            background: linear-gradient(180deg, #E8F0FE 0%, #F8F9FA 35%, #FFF8F0 100%) !important;
             background-attachment: fixed !important;
         }}
         .block-container {{
-            padding-top: 1.75rem;
-            padding-bottom: 3rem;
-            max-width: 1080px;
+            padding-top: 1.5rem;
+            max-width: 960px;
         }}
 
-        /* ── Sidebar — teal/navy gradient ── */
+        /* ── Sidebar — MD3 navigation drawer (light) ── */
         section[data-testid="stSidebar"] {{
-            background: linear-gradient(180deg, #1e3a5f 0%, #1a2744 45%, #16213e 100%) !important;
-            border-right: 1px solid rgba(66, 133, 244, 0.25) !important;
+            background: {C_SURFACE} !important;
+            border-right: 1px solid {C_OUTLINE_VARIANT} !important;
+            box-shadow: 2px 0 8px rgba(60,64,67,0.08) !important;
         }}
         section[data-testid="stSidebar"] > div {{
             background: transparent !important;
@@ -59,269 +64,199 @@ def inject_material_theme() -> None:
         }}
 
         [data-testid="stSidebarNavLink"] {{
-            border-radius: 14px !important;
-            padding: 0.7rem 1rem !important;
-            margin: 0.2rem 0.5rem !important;
+            border-radius: 100px !important;
+            padding: 0.75rem 1.15rem !important;
+            margin: 0.15rem 0.6rem !important;
             font-weight: 500 !important;
             font-size: 0.875rem !important;
-            color: {C_ON_VARIANT} !important;
-            transition: all 0.2s ease;
+            color: {C_ON_SURFACE_VARIANT} !important;
         }}
         [data-testid="stSidebarNavLink"]:hover {{
-            background: rgba(66, 133, 244, 0.18) !important;
-            color: {C_ON_SURFACE} !important;
+            background: {C_PRIMARY_CONTAINER} !important;
+            color: {C_PRIMARY} !important;
         }}
         [data-testid="stSidebarNavLink"][aria-current="page"] {{
-            background: linear-gradient(90deg, rgba(66,133,244,0.35), rgba(161,66,244,0.2)) !important;
-            color: #fff !important;
-            font-weight: 600 !important;
-            border-left: 3px solid {C_BLUE} !important;
-            box-shadow: 0 2px 12px rgba(66,133,244,0.2);
+            background: {C_PRIMARY_CONTAINER} !important;
+            color: {C_PRIMARY} !important;
+            font-weight: 700 !important;
         }}
 
-        /* ── Profile hero (landing) ── */
+        /* ── Profile hero ── */
         .profile-hero {{
-            background: linear-gradient(120deg, rgba(66,133,244,0.25) 0%, rgba(161,66,244,0.2) 50%, rgba(52,168,83,0.15) 100%);
-            border: 1px solid rgba(138, 180, 248, 0.3);
-            border-radius: 24px;
-            padding: 2.5rem 2rem;
-            margin-bottom: 1.75rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
-            position: relative;
-            overflow: hidden;
-        }}
-        .profile-hero::before {{
-            content: '';
-            position: absolute;
-            top: -40%;
-            right: -10%;
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle, rgba(66,133,244,0.2) 0%, transparent 70%);
-            pointer-events: none;
+            background: linear-gradient(135deg, #1A73E8 0%, #4285F4 40%, #9334E6 100%);
+            border-radius: 28px;
+            padding: 2.25rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 8px rgba(60,64,67,0.12), 0 8px 24px rgba(26,115,232,0.25);
+            color: #fff;
         }}
         .profile-hero .avatar {{
-            width: 72px;
-            height: 72px;
+            width: 76px; height: 76px;
             border-radius: 50%;
-            background: linear-gradient(135deg, {C_BLUE}, {C_PURPLE});
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.25rem;
             margin-bottom: 1rem;
-            box-shadow: 0 4px 20px rgba(66,133,244,0.45);
+            border: 3px solid rgba(255,255,255,0.5);
         }}
         .profile-hero h1 {{
-            font-size: 2.25rem;
-            font-weight: 600;
-            margin: 0 0 0.4rem 0;
-            color: #fff;
-            letter-spacing: -0.03em;
+            font-size: 2.125rem; font-weight: 500; margin: 0 0 0.35rem;
+            color: #fff !important;
         }}
         .profile-hero .tagline {{
-            color: {C_ON_VARIANT};
-            font-size: 1.05rem;
-            margin: 0 0 1rem 0;
-            line-height: 1.5;
+            color: rgba(255,255,255,0.92); font-size: 1.05rem; margin: 0;
+            line-height: 1.55;
         }}
 
-        /* ── Standard hero ── */
         .md-hero {{
-            background: linear-gradient(120deg, rgba(66,133,244,0.22), rgba(161,66,244,0.18));
-            border: 1px solid rgba(138,180,248,0.25);
-            border-radius: 24px;
-            padding: 2rem 2.25rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+            background: {C_SURFACE};
+            border-radius: 28px;
+            padding: 2rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid {C_OUTLINE_VARIANT};
+            box-shadow: 0 1px 3px rgba(60,64,67,0.08), 0 4px 12px rgba(60,64,67,0.06);
         }}
-        .md-hero h1 {{
-            font-size: 2rem;
-            font-weight: 600;
-            margin: 0 0 0.5rem 0;
-            color: #fff;
-        }}
-        .md-hero p {{
-            color: {C_ON_VARIANT};
-            margin: 0;
-            line-height: 1.6;
-        }}
+        .md-hero h1 {{ font-size: 1.85rem; font-weight: 500; color: {C_ON_SURFACE} !important; margin: 0 0 0.4rem; }}
+        .md-hero p {{ color: {C_ON_SURFACE_VARIANT}; margin: 0; line-height: 1.6; }}
 
         .md-chip {{
             display: inline-flex;
-            background: rgba(66,133,244,0.2);
-            color: #c8daff;
-            border: 1px solid rgba(66,133,244,0.35);
-            border-radius: 20px;
-            padding: 0.35rem 0.9rem;
-            font-size: 0.8rem;
+            background: {C_PRIMARY_CONTAINER};
+            color: #174EA6;
+            border-radius: 8px;
+            padding: 0.35rem 0.85rem;
+            font-size: 0.8125rem;
             font-weight: 500;
             margin: 0.25rem 0.35rem 0.25rem 0;
         }}
+        .profile-hero .md-chip {{
+            background: rgba(255,255,255,0.22);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.35);
+        }}
 
-        /* ── Rich project card ── */
+        /* ── Project cards — MD3 elevated surface ── */
         .proj-card {{
-            background: linear-gradient(135deg, rgba(27,38,59,0.95), rgba(36,59,85,0.85));
+            background: {C_SURFACE};
             border-radius: 20px;
-            padding: 0;
-            margin-bottom: 1.1rem;
-            border: 1px solid rgba(255,255,255,0.08);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            margin-bottom: 1.25rem;
+            border: 1px solid {C_OUTLINE_VARIANT};
+            box-shadow: 0 1px 2px rgba(60,64,67,0.06), 0 2px 6px rgba(60,64,67,0.04);
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
         }}
         .proj-card:hover {{
-            transform: translateY(-2px);
-            box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+            box-shadow: 0 2px 6px rgba(60,64,67,0.1), 0 8px 24px rgba(60,64,67,0.08);
         }}
-        .proj-accent {{
-            height: 4px;
-            width: 100%;
-        }}
-        .proj-body {{
-            padding: 1.35rem 1.5rem 1.5rem;
-        }}
-        .proj-head {{
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            margin-bottom: 0.75rem;
-        }}
-        .proj-icon {{
-            font-size: 1.5rem;
-        }}
-        .proj-title {{
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #fff;
-            margin: 0;
-        }}
+        .proj-accent {{ height: 5px; }}
+        .proj-body {{ padding: 1.35rem 1.5rem 1.5rem; }}
+        .proj-head {{ display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.65rem; flex-wrap: wrap; }}
+        .proj-icon {{ font-size: 1.6rem; }}
+        .proj-title {{ font-size: 1.125rem; font-weight: 600; color: {C_ON_SURFACE}; margin: 0; flex: 1; }}
         .proj-status {{
-            font-size: 0.72rem;
-            font-weight: 600;
-            padding: 0.2rem 0.65rem;
-            border-radius: 20px;
-            margin-left: auto;
-            white-space: nowrap;
+            font-size: 0.72rem; font-weight: 600;
+            padding: 0.25rem 0.75rem; border-radius: 100px;
         }}
-        .proj-gist {{
-            color: {C_ON_VARIANT};
-            font-size: 0.9rem;
-            line-height: 1.65;
-            margin: 0 0 1rem 0;
-        }}
-        .proj-meta {{
-            display: grid;
-            gap: 0.65rem;
-        }}
+        .proj-gist {{ color: {C_ON_SURFACE_VARIANT}; font-size: 0.9375rem; line-height: 1.65; margin: 0 0 1rem; }}
+        .proj-meta {{ display: grid; gap: 0.6rem; }}
         .proj-meta-row {{
-            background: rgba(0,0,0,0.2);
+            background: {C_SURFACE_CONTAINER};
             border-radius: 12px;
-            padding: 0.65rem 0.85rem;
-            border-left: 3px solid;
+            padding: 0.75rem 1rem;
+            border-left: 4px solid;
         }}
         .proj-meta-label {{
-            font-size: 0.65rem;
-            font-weight: 600;
-            letter-spacing: 0.07em;
-            text-transform: uppercase;
-            margin-bottom: 0.2rem;
-            opacity: 0.75;
+            font-size: 0.6875rem; font-weight: 600;
+            letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.25rem;
         }}
-        .proj-meta-text {{
-            font-size: 0.84rem;
-            color: {C_ON_SURFACE};
-            line-height: 1.55;
-            margin: 0;
-        }}
+        .proj-meta-text {{ font-size: 0.875rem; color: {C_ON_SURFACE}; line-height: 1.55; margin: 0; }}
 
-        .sidebar-brand {{
-            padding: 1.25rem 1rem;
-            border-bottom: 1px solid rgba(138,180,248,0.15);
-        }}
-        .sidebar-brand .logo {{
-            width: 44px;
-            height: 44px;
+        /* Shipped apps nested inside portfolio */
+        .shipped-apps {{
+            background: {C_SURFACE_DIM};
             border-radius: 14px;
-            background: linear-gradient(135deg, {C_BLUE}, {C_PURPLE});
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            margin-bottom: 0.75rem;
-            box-shadow: 0 4px 16px rgba(66,133,244,0.4);
+            padding: 0.85rem 1rem;
+            margin-top: 0.75rem;
+            border: 1px dashed {C_OUTLINE_VARIANT};
         }}
-        .sidebar-brand .title {{
-            font-size: 1rem;
-            font-weight: 600;
-            color: #fff;
-            margin: 0;
+        .shipped-apps-title {{
+            font-size: 0.6875rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: {C_PRIMARY}; margin: 0 0 0.5rem;
         }}
-        .sidebar-brand .subtitle {{
-            font-size: 0.72rem;
-            color: {C_ON_VARIANT};
-            margin: 0.2rem 0 0 0;
+        .shipped-app-item {{
+            display: flex; gap: 0.5rem; align-items: flex-start;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid {C_OUTLINE_VARIANT};
         }}
+        .shipped-app-item:last-child {{ border-bottom: none; }}
+        .shipped-app-name {{ font-weight: 600; color: {C_ON_SURFACE}; font-size: 0.875rem; }}
+        .shipped-app-gist {{ font-size: 0.8125rem; color: {C_ON_SURFACE_VARIANT}; margin: 0.15rem 0 0; }}
+
+        .sidebar-nav-list {{
+            padding: 0.5rem 1rem 0.75rem;
+            font-size: 0.8125rem;
+            color: {C_ON_SURFACE_VARIANT};
+            line-height: 1.8;
+        }}
+        .sidebar-nav-list strong {{ color: {C_ON_SURFACE}; display: block; margin-bottom: 0.35rem; font-size: 0.6875rem; letter-spacing: 0.06em; text-transform: uppercase; }}
         .sidebar-footer {{
             padding: 1rem;
-            border-top: 1px solid rgba(138,180,248,0.12);
+            border-top: 1px solid {C_OUTLINE_VARIANT};
             font-size: 0.75rem;
-            color: {C_ON_VARIANT};
+            color: {C_ON_SURFACE_VARIANT};
         }}
-        .sidebar-footer a {{ color: {C_PRIMARY}; text-decoration: none; }}
+        .sidebar-footer a {{ color: {C_PRIMARY}; text-decoration: none; font-weight: 500; }}
 
         .md-section-label {{
-            font-size: 0.68rem;
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: {C_PRIMARY};
-            margin: 1.25rem 0 0.65rem 0;
-            padding-left: 0.5rem;
+            font-size: 0.6875rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: {C_PRIMARY}; margin: 1.5rem 0 0.75rem;
         }}
 
         div[data-testid="stMetric"] {{
-            background: linear-gradient(135deg, rgba(66,133,244,0.15), rgba(161,66,244,0.1));
-            border: 1px solid rgba(138,180,248,0.2);
+            background: {C_SURFACE};
+            border: 1px solid {C_OUTLINE_VARIANT};
             border-radius: 16px;
             padding: 1rem;
+            box-shadow: 0 1px 2px rgba(60,64,67,0.06);
         }}
-        div[data-testid="stMetric"] [data-testid="stMetricValue"] {{
-            color: {C_PRIMARY} !important;
-        }}
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] {{ color: {C_PRIMARY} !important; }}
 
         div[data-testid="stVerticalBlockBorderWrapper"] {{
-            border-radius: 18px !important;
-            border-color: rgba(138,180,248,0.2) !important;
-            background: rgba(27,38,59,0.6) !important;
+            border-radius: 20px !important;
+            border-color: {C_OUTLINE_VARIANT} !important;
+            background: {C_SURFACE} !important;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.06) !important;
         }}
 
         .stButton > button[kind="primary"] {{
-            background: linear-gradient(90deg, {C_BLUE}, {C_PURPLE}) !important;
-            color: #fff !important;
+            background: {C_PRIMARY} !important;
+            color: {C_ON_PRIMARY} !important;
             border: none !important;
             border-radius: 100px !important;
-            font-weight: 600 !important;
-            box-shadow: 0 4px 14px rgba(66,133,244,0.35) !important;
+            font-weight: 500 !important;
+            box-shadow: 0 1px 3px rgba(60,64,67,0.15) !important;
         }}
         .stButton > button[kind="primary"]:hover {{
-            box-shadow: 0 6px 20px rgba(66,133,244,0.5) !important;
+            background: #1557B0 !important;
+            box-shadow: 0 2px 8px rgba(26,115,232,0.35) !important;
         }}
 
         .stTextInput input, .stTextArea textarea {{
             border-radius: 12px !important;
-            background: rgba(27,38,59,0.8) !important;
-            border-color: rgba(138,180,248,0.25) !important;
+            background: {C_SURFACE} !important;
+            border: 1px solid {C_OUTLINE_VARIANT} !important;
             color: {C_ON_SURFACE} !important;
         }}
 
         [data-testid="stChatMessage"] {{
-            background: rgba(27,38,59,0.7) !important;
+            background: {C_SURFACE_CONTAINER} !important;
             border-radius: 16px !important;
-            border: 1px solid rgba(138,180,248,0.15) !important;
+            border: 1px solid {C_OUTLINE_VARIANT} !important;
         }}
 
-        h1, h2, h3 {{ color: #fff !important; }}
+        h1, h2, h3 {{ color: {C_ON_SURFACE} !important; }}
         </style>
         """,
         unsafe_allow_html=True,
@@ -331,16 +266,35 @@ def inject_material_theme() -> None:
 inject_base_css = inject_material_theme
 
 
-def render_sidebar_brand() -> None:
-    st.markdown(
-        """
-        <div class="sidebar-brand">
-            <div class="logo">👤</div>
-            <p class="title">Abhishek Jain</p>
-            <p class="subtitle">Agentic AI · Builder portfolio</p>
+def _shipped_apps_html(apps: tuple[ShippedApp, ...]) -> str:
+    if not apps:
+        return ""
+    items = "".join(
+        f"""
+        <div class="shipped-app-item">
+            <span>▸</span>
+            <div>
+                <div class="shipped-app-name">{html.escape(a.name)}</div>
+                <p class="shipped-app-gist">{html.escape(a.gist)}</p>
+            </div>
         </div>
-        <p class="md-section-label" style="padding-left:1rem;">What I'm building</p>
-        """,
+        """
+        for a in apps
+    )
+    return f"""
+    <div class="shipped-apps">
+        <p class="shipped-apps-title">Live apps in this portfolio</p>
+        {items}
+    </div>
+    """
+
+
+def render_sidebar_projects() -> None:
+    from shared.projects import ALL_PROJECTS
+
+    lines = "".join(f"<div>{html.escape(p.icon)} {html.escape(p.name)}</div>" for p in ALL_PROJECTS)
+    st.markdown(
+        f'<div class="sidebar-nav-list"><strong>All projects</strong>{lines}</div>',
         unsafe_allow_html=True,
     )
 
@@ -350,7 +304,7 @@ def render_sidebar_footer() -> None:
         """
         <div class="sidebar-footer">
             <a href="https://iamabyjain.com" target="_blank">iamabyjain.com</a><br>
-            Built with Cursor · Aug 2026
+            Abhishek Jain · Cursor · Aug 2026
         </div>
         """,
         unsafe_allow_html=True,
@@ -361,7 +315,7 @@ def profile_hero(name: str, tagline: str, pills: list[str] | None = None) -> Non
     chips = ""
     if pills:
         chips = "".join(f'<span class="md-chip">{html.escape(p)}</span>' for p in pills)
-        chips = f'<div style="display:flex;flex-wrap:wrap;margin-top:0.5rem">{chips}</div>'
+        chips = f'<div style="display:flex;flex-wrap:wrap;margin-top:1rem">{chips}</div>'
     st.markdown(
         f"""
         <div class="profile-hero">
@@ -387,37 +341,37 @@ def hero(title: str, subtitle: str, pills: list[str] | None = None) -> None:
     )
 
 
-def rich_project_card(
-    *,
-    icon: str,
-    title: str,
-    status: str,
-    accent: str,
-    gist: str,
-    industry: str,
-    beneficiaries: str,
-) -> None:
+def rich_project_card(project: Project) -> None:
+    shipped = _shipped_apps_html(project.shipped_apps)
+    repo_line = (
+        f'<p style="font-size:0.75rem;color:{C_ON_SURFACE_VARIANT};margin:0.75rem 0 0;">'
+        f'📁 {html.escape(project.repo_hint)}</p>'
+        if project.repo_hint
+        else ""
+    )
     st.markdown(
         f"""
         <div class="proj-card">
-            <div class="proj-accent" style="background:linear-gradient(90deg,{accent},{accent}88)"></div>
+            <div class="proj-accent" style="background:linear-gradient(90deg,{project.accent},{project.accent}99)"></div>
             <div class="proj-body">
                 <div class="proj-head">
-                    <span class="proj-icon">{icon}</span>
-                    <p class="proj-title">{html.escape(title)}</p>
-                    <span class="proj-status" style="background:{accent}33;color:{accent}">{html.escape(status)}</span>
+                    <span class="proj-icon">{project.icon}</span>
+                    <p class="proj-title">{html.escape(project.name)}</p>
+                    <span class="proj-status" style="background:{project.accent}22;color:{project.accent}">{html.escape(project.status)}</span>
                 </div>
-                <p class="proj-gist">{html.escape(gist)}</p>
-                <div class="proj-meta">
+                <p class="proj-gist">{html.escape(project.gist)}</p>
+                {shipped}
+                <div class="proj-meta" style="margin-top:1rem">
                     <div class="proj-meta-row" style="border-color:{C_TEAL}">
                         <div class="proj-meta-label" style="color:{C_TEAL}">Industry</div>
-                        <p class="proj-meta-text">{html.escape(industry)}</p>
+                        <p class="proj-meta-text">{html.escape(project.industry)}</p>
                     </div>
                     <div class="proj-meta-row" style="border-color:{C_YELLOW}">
-                        <div class="proj-meta-label" style="color:{C_YELLOW}">Who benefits</div>
-                        <p class="proj-meta-text">{html.escape(beneficiaries)}</p>
+                        <div class="proj-meta-label" style="color:#B06000">Who benefits</div>
+                        <p class="proj-meta-text">{html.escape(project.beneficiaries)}</p>
                     </div>
                 </div>
+                {repo_line}
             </div>
         </div>
         """,
@@ -427,15 +381,3 @@ def rich_project_card(
 
 def section_label(text: str) -> None:
     st.markdown(f'<p class="md-section-label">{html.escape(text)}</p>', unsafe_allow_html=True)
-
-
-def project_card(title: str, description: str, status: str = "Live") -> None:
-    rich_project_card(
-        icon="📌",
-        title=title,
-        status=status,
-        accent=C_BLUE,
-        gist=description,
-        industry="—",
-        beneficiaries="—",
-    )

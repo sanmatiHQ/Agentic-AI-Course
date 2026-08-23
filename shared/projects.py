@@ -1,8 +1,17 @@
-"""Portfolio project definitions."""
+"""Portfolio project definitions — single source of truth."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
+
+
+@dataclass(frozen=True)
+class ShippedApp:
+    """An app shipped inside the Agentic AI Course portfolio."""
+
+    name: str
+    gist: str
+    page_path: str | None = None
 
 
 @dataclass(frozen=True)
@@ -14,40 +23,38 @@ class Project:
     gist: str
     industry: str
     beneficiaries: str
-    in_sidebar: bool = True
+    shipped_apps: tuple[ShippedApp, ...] = ()
+    repo_hint: str = ""
 
 
-PROJECTS: list[Project] = [
-    Project(
-        name="Agentic AI Course Portfolio",
-        status="Active",
-        accent="#4285F4",
-        icon="🎓",
-        gist=(
-            "A living Streamlit portfolio for IITM Pravartak / FutureSense — each course module "
-            "ships as a deployable app. Concept Explainer is the first assignment live in this repo."
-        ),
-        industry="EdTech · AI upskilling · enterprise L&D",
-        beneficiaries=(
-            "Working professionals learning agentic AI, course instructors who want demonstrable "
-            "assignments, and hiring managers reviewing portfolio-ready work."
+# ── Course portfolio (this Streamlit repo) ─────────────────────────────────────
+COURSE_PORTFOLIO = Project(
+    name="Agentic AI Course Portfolio",
+    status="Active · Streamlit",
+    accent="#1A73E8",
+    icon="🎓",
+    gist=(
+        "IITM Pravartak × FutureSense — AI Agent Workflows & Agentic Systems. "
+        "Each module ships as a live Streamlit app in this repo. "
+        "Course orientation notes merged from the legacy FutureSense repo live in docs/."
+    ),
+    industry="EdTech · AI upskilling · enterprise L&D",
+    beneficiaries=(
+        "Working professionals building agentic AI skills, instructors needing demonstrable "
+        "assignments, and hiring managers evaluating portfolio-ready capstone work."
+    ),
+    shipped_apps=(
+        ShippedApp(
+            name="Concept Explainer",
+            gist="Assignment 1 — BYOK tutor for SMEs, experts & engineers with chat + export.",
+            page_path="pages/2_🧠_Concept_Explainer.py",
         ),
     ),
-    Project(
-        name="Concept Explainer",
-        status="Live app",
-        accent="#A142F4",
-        icon="🧠",
-        gist=(
-            "BYOK multi-audience AI tutor — paste OpenAI or Claude keys, pick a model with pricing, "
-            "explain any concept with analogies, business impact, and technical depth, then chat and export."
-        ),
-        industry="EdTech · internal enablement · sales engineering",
-        beneficiaries=(
-            "SMEs and business leaders who need plain-language clarity, domain experts validating "
-            "decisions, and engineers who want depth without jargon overload."
-        ),
-    ),
+    repo_hint="sanmatiHQ/Agentic-AI-Course",
+)
+
+# ── Independent ventures (outside this repo) ───────────────────────────────────
+INDEPENDENT_PROJECTS: list[Project] = [
     Project(
         name="GeM Bid System",
         status="In production",
@@ -55,13 +62,14 @@ PROJECTS: list[Project] = [
         icon="🏛️",
         gist=(
             "Multi-agent intelligence mesh for India's Government e-Marketplace — harvests bids, "
-            "extracts PDFs, enriches with LLMs, links contracts & marketplace data, serves tenant dashboards."
+            "extracts PDFs, enriches with LLMs, links contracts & MKP data, powers tenant dashboards."
         ),
         industry="GovTech · B2B procurement · MSME commerce",
         beneficiaries=(
-            "Bid managers and sales teams chasing GeM tenders, procurement consultants, MSMEs "
-            "competing for government contracts, and analysts tracking ministry spend patterns."
+            "Bid managers chasing GeM tenders, MSMEs competing for government contracts, "
+            "procurement consultants, and analysts tracking ministry spend."
         ),
+        repo_hint="sanmatiHQ/GeM_Bid_System (private monorepo)",
     ),
     Project(
         name="Bharat Quant",
@@ -69,13 +77,13 @@ PROJECTS: list[Project] = [
         accent="#FBBC04",
         icon="📈",
         gist=(
-            "Quantitative research engine tuned for Indian markets — systematic signals, backtesting, "
-            "and execution workflows designed for NSE/BSE structure, liquidity, and regulatory realities."
+            "Quantitative research engine for Indian markets — systematic signals, backtesting, "
+            "and execution workflows tuned for NSE/BSE microstructure and regulatory context."
         ),
         industry="FinTech · capital markets · quantitative finance",
         beneficiaries=(
-            "Retail and prop traders, portfolio managers, research analysts, and fintech teams "
-            "building systematic strategies for Bharat-specific market microstructure."
+            "Prop traders, portfolio managers, research analysts, and fintech teams building "
+            "systematic strategies for Bharat markets."
         ),
     ),
     Project(
@@ -84,30 +92,31 @@ PROJECTS: list[Project] = [
         accent="#EA4335",
         icon="📬",
         gist=(
-            "Local-first personal ops bot on your machine — triages mail, meetings, files, and OEM "
-            "price sheets without sending sensitive data to the cloud."
+            "Local-first personal ops assistant — mail, meetings, files, and OEM price tracking "
+            "on your machine; sensitive data never leaves your hardware."
         ),
         industry="Productivity · SMB operations · personal knowledge work",
         beneficiaries=(
-            "Founders and operators drowning in admin, sales teams tracking OEM pricing, and "
-            "anyone who wants an private assistant on their own hardware."
+            "Founders buried in admin, sales teams tracking OEM pricing, operators who need "
+            "a private assistant without cloud exposure."
         ),
+        repo_hint="sanmatiHQ/clerk",
     ),
     Project(
         name="IntelliMatrix",
         status="In design",
-        accent="#00BCD4",
+        accent="#9334E6",
         icon="🔮",
         gist=(
-            "Intelligence layer that fuses structured business data, embeddings, and decision rules "
-            "into actionable matrices — turning noisy signals into strategy-ready views."
+            "Intelligence layer fusing structured data, embeddings, and decision rules into "
+            "actionable matrices — noisy business signals → strategy-ready views."
         ),
         industry="Enterprise analytics · strategy consulting · ops intelligence",
         beneficiaries=(
-            "Strategy teams, COOs, and data leaders who need connected insight across siloed "
-            "sources without standing up a full data warehouse project."
+            "Strategy teams, COOs, and data leaders who need cross-silo insight without a "
+            "full data-warehouse programme."
         ),
     ),
 ]
 
-SIDEBAR_APPS = [p for p in PROJECTS if p.in_sidebar and p.name != "Agentic AI Course Portfolio"]
+ALL_PROJECTS: list[Project] = [COURSE_PORTFOLIO, *INDEPENDENT_PROJECTS]

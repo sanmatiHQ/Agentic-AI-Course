@@ -2,7 +2,7 @@
 
 import streamlit as st
 
-from shared.ui import inject_material_theme, render_sidebar_brand
+from shared.ui import inject_material_theme
 
 st.set_page_config(
     page_title="Abhishek Jain · Agentic AI",
@@ -12,9 +12,6 @@ st.set_page_config(
 )
 
 inject_material_theme()
-
-with st.sidebar:
-    render_sidebar_brand()
 
 about = st.Page(
     "pages/1_👤_Abhishek_Jain.py",
