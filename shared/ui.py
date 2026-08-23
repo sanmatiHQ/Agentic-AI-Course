@@ -532,6 +532,31 @@ def inject_material_theme() -> None:
             margin: -0.35rem 0 0.85rem; line-height: 1.45;
         }}
         .ce-audience-hint strong {{ color: {C_ON_SURFACE}; font-weight: 600; }}
+        .ce-usage-strip {{
+            display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.85rem;
+            background: rgba(255,255,255,0.75);
+            border: 1px solid {C_OUTLINE};
+            border-radius: 14px;
+            padding: 0.55rem 0.9rem;
+            margin: 0 0 0.85rem;
+            font-size: 0.75rem;
+        }}
+        .ce-usage-label {{
+            font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+            color: {C_ON_SURFACE_VARIANT};
+        }}
+        .ce-usage-val {{ font-weight: 800; color: {C_PRIMARY}; }}
+        .ce-usage-detail {{ color: {C_ON_SURFACE_VARIANT}; }}
+        .ce-usage-cost {{
+            font-weight: 700; color: #059669;
+            background: rgba(5,150,105,0.1); padding: 0.15rem 0.5rem; border-radius: 999px;
+        }}
+        .ce-usage-turns {{
+            margin-left: auto; font-weight: 600; color: {C_ON_SURFACE_VARIANT};
+        }}
+        .ce-limits-caption {{
+            font-size: 0.7rem; color: {C_ON_SURFACE_VARIANT}; margin: 0.35rem 0 0;
+        }}
 
         div[data-testid="stVerticalBlockBorderWrapper"] .ce-panel-title {{
             margin-top: -0.25rem;
@@ -709,6 +734,36 @@ def ce_audience_hint(audiences: list[str]) -> None:
     labels = ", ".join(html.escape(a) for a in audiences)
     _render_html(
         f'<p class="ce-audience-hint">Explaining for: <strong>{labels}</strong> · change in sidebar</p>'
+    )
+
+
+def ce_usage_strip(
+    input_tokens: int,
+    output_tokens: int,
+    cost_usd: float | None,
+    *,
+    turns: int,
+    max_turns: int,
+) -> None:
+    total = input_tokens + output_tokens
+    cost = f'<span class="ce-usage-cost">~${cost_usd:.4f}</span>' if cost_usd is not None else ""
+    _render_html(
+        f"""
+        <div class="ce-usage-strip bento-animate">
+            <span class="ce-usage-label">Session use</span>
+            <span class="ce-usage-val">{total:,} tokens</span>
+            <span class="ce-usage-detail">{input_tokens:,} in · {output_tokens:,} out</span>
+            {cost}
+            <span class="ce-usage-turns">{turns}/{max_turns} turns</span>
+        </div>
+        """
+    )
+
+
+def ce_limits_caption(max_terms: int, max_chars: int, max_context: int) -> None:
+    _render_html(
+        f'<p class="ce-limits-caption">Limits: {max_terms} terms · {max_chars} chars · '
+        f"last {max_context} follow-ups in context</p>"
     )
 
 

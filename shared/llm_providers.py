@@ -17,6 +17,13 @@ class ModelInfo:
     price_label: str
 
 
+@dataclass
+class ChatResult:
+    content: str
+    input_tokens: int
+    output_tokens: int
+
+
 def validate_and_list_models(provider: str, api_key: str) -> tuple[list[ModelInfo], str | None]:
     """Validate API key with a minimal call and return chat-capable models."""
     try:
@@ -56,7 +63,6 @@ def _anthropic_models(api_key: str) -> tuple[list[ModelInfo], str | None]:
         models.append(ModelInfo(id=mid, provider="anthropic", price_label=price.label()))
     models.sort(key=lambda m: m.id)
     if not models:
-        # Fallback ping — older SDK paths
         client.messages.create(
             model="claude-3-5-haiku-20241022",
             max_tokens=1,
@@ -72,19 +78,34 @@ def chat(
     model: str,
     messages: list[dict[str, str]],
     system: str,
-) -> str:
+    *,
+    max_tokens: int = 2048,
+) -> ChatResult:
     if provider == "openai":
         client = openai.OpenAI(api_key=api_key)
         payload = [{"role": "system", "content": system}, *messages]
-        resp = client.chat.completions.create(model=model, messages=payload, max_tokens=2048)
-        return resp.choices[0].message.content or ""
+        resp = client.chat.completions.create(
+            model=model,
+            messages=payload,
+            max_tokens=max_tokens,
+        )
+        usage = resp.usage
+        return ChatResult(
+            content=resp.choices[0].message.content or "",
+            input_tokens=usage.prompt_tokens if usage else 0,
+            output_tokens=usage.completion_tokens if usage else 0,
+        )
 
     client = anthropic.Anthropic(api_key=api_key)
     resp = client.messages.create(
         model=model,
-        max_tokens=2048,
+        max_tokens=max_tokens,
         system=system,
         messages=messages,
     )
     parts = [block.text for block in resp.content if block.type == "text"]
-    return "\n".join(parts)
+    return ChatResult(
+        content="\n".join(parts),
+        input_tokens=resp.usage.input_tokens,
+        output_tokens=resp.usage.output_tokens,
+    )

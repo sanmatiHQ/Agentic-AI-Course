@@ -49,3 +49,27 @@ def price_for(provider: str, model_id: str) -> ModelPrice:
         if model_id.startswith(key):
             return price
     return ModelPrice(None, None)
+
+
+def estimate_cost_usd(
+    provider: str,
+    model_id: str,
+    input_tokens: int,
+    output_tokens: int,
+) -> float | None:
+    """Estimated session cost from token counts and reference list prices."""
+    price = price_for(provider, model_id)
+    if price.input_per_1m is None or price.output_per_1m is None:
+        return None
+    return (input_tokens * price.input_per_1m + output_tokens * price.output_per_1m) / 1_000_000
+
+
+def format_usage(
+    input_tokens: int,
+    output_tokens: int,
+    cost_usd: float | None,
+) -> str:
+    total = input_tokens + output_tokens
+    cost_part = f" · ~${cost_usd:.4f}" if cost_usd is not None else ""
+    return f"{total:,} tokens ({input_tokens:,} in · {output_tokens:,} out){cost_part}"
+
