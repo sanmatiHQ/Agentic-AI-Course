@@ -13,9 +13,8 @@ Streamlit portfolio for IITM Pravartak × FutureSense · merged with course orie
 | 3 | Bharat Quant | Research · paper-first |
 | 4 | Clerk | Early build · local-first |
 | 5 | IntelliMatrix | In development |
-| 6 | GeM Crawler Fleet | Design target |
-| 7 | Race Management | In development |
-| 8 | Daily Reporting System | In development |
+| 6 | Race Management | In development |
+| 7 | Daily Reporting System | In development |
 
 ## Local run
 

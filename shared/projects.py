@@ -59,9 +59,10 @@ INDEPENDENT_PROJECTS: list[Project] = [
         accent="#34A853",
         icon="🏛️",
         gist=(
-            "14-agent intelligence mesh on GCP Cloud Run and Mac Mini — harvests GeM bids, "
-            "contracts, and MKP catalogue; extracts PDF truth with local LLMs; Cortex "
-            "briefs and price benchmarks; tenant dashboard at gem.sanmatitraders.com."
+            "Multi-agent procurement intelligence for India's Government e-Marketplace — "
+            "harvests bids, contracts, and marketplace catalogue; extracts structured truth "
+            "from bid PDFs; delivers Cortex briefs, price benchmarks, and spec matching; "
+            "live tenant dashboard at gem.sanmatitraders.com."
         ),
         industry="GovTech · B2B procurement · MSME commerce",
         beneficiaries=(
@@ -91,9 +92,9 @@ INDEPENDENT_PROJECTS: list[Project] = [
         accent="#EA4335",
         icon="📬",
         gist=(
-            "Personal ops console on the Mac Mini — Gmail and Drive workflows for bids, "
-            "trainings, meetings, document filing, and OEM price tracking. GeM OTP "
-            "auto-forwards to ComRelay; mail and files never leave your hardware."
+            "Personal ops console — local-first Gmail and Drive workflows for bids, "
+            "trainings, meetings, document filing, and OEM price tracking. Sensitive "
+            "mail and files stay on your machine, not in the cloud."
         ),
         industry="Productivity · SMB operations · personal knowledge work",
         beneficiaries=(
@@ -115,22 +116,6 @@ INDEPENDENT_PROJECTS: list[Project] = [
         beneficiaries=(
             "Investigators, security teams, and analysts who need cross-source intelligence "
             "and video analytics without sending biometrics to the cloud."
-        ),
-    ),
-    Project(
-        name="GeM Crawler Fleet",
-        status="Design target · Private",
-        accent="#007B83",
-        icon="🕸️",
-        gist=(
-            "Distributed GeM portal crawler in a standalone repo — Agent Provisioning plus "
-            "edge fleet nodes that accelerate platform-agent HTTP harvest (parallel shards, "
-            "on-demand bursts) without replacing agent parsing or quality pipelines."
-        ),
-        industry="GovTech · distributed systems · crawl infrastructure",
-        beneficiaries=(
-            "GeM Bid System harvest agents that need faster, wider GeM coverage while each "
-            "agent retains ownership of its domain logic and MongoDB writes."
         ),
     ),
     Project(
