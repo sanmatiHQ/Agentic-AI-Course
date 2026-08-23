@@ -15,5 +15,10 @@ concept = st.Page(
     title="Concept Explainer",
     icon="🧠",
 )
+about = st.Page(
+    "pages/3_👤_Abhishek_Jain.py",
+    title="Abhishek Jain",
+    icon="👤",
+)
 
-st.navigation([home, concept]).run()
+st.navigation([home, concept, about]).run()

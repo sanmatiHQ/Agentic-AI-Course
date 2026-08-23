@@ -1,3 +1,10 @@
+[theme]
+primaryColor = "#6366f1"
+backgroundColor = "#0f1117"
+secondaryBackgroundColor = "#1a1d29"
+textColor = "#e2e8f0"
+font = "sans serif"
+
 [server]
 headless = true
 port = 8501
@@ -6,14 +13,6 @@ enableXsrfProtection = true
 
 [browser]
 gatherUsageStats = false
-serverAddress = "localhost"
-
-[theme]
-primaryColor = "#FF4B4B"
-backgroundColor = "#0E1117"
-secondaryBackgroundColor = "#262730"
-textColor = "#FAFAFA"
-font = "sans serif"
 
 [runner]
 fastReruns = true

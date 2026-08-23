@@ -2,64 +2,58 @@
 
 import streamlit as st
 
-st.title("Agentic AI Course")
-st.caption("Agentic AI portfolio · IITM Pravartak / FutureSense")
+from shared.ui import hero, inject_base_css
+
+inject_base_css()
+
+hero(
+    "Agentic AI Course",
+    "Hands-on agentic AI portfolio · IITM Pravartak / FutureSense",
+    pills=["Streamlit", "Python 3.11", "OpenAI · Claude", "Community Cloud"],
+)
 
 st.markdown(
     """
 ### What I am building
 
-This workspace is my **hands-on lab** for the *AI Agent Workflows and Agentic Systems*
-programme. Each module becomes a working Streamlit app — not slideware — so concepts
-stick through build-and-ship practice.
+A **living portfolio** of Streamlit apps — one per course module — so every concept in
+*AI Agent Workflows and Agentic Systems* becomes something you can click, use, and ship.
 
 ### How I develop
 
 | Step | Approach |
 |------|----------|
-| **Design** | Break the assignment into user flows (input → LLM → output) before coding |
-| **Build** | Python 3.11 + Streamlit multipage apps, shared helpers in `shared/` |
-| **Integrate** | Bring-your-own-key for OpenAI & Claude — keys stay in the browser session only |
-| **Ship** | Push to GitHub → auto-deploy on **Streamlit Community Cloud** |
-| **Tooling** | **Cursor** with the latest model for pair-programming and iteration |
+| **Design** | Map user flows (input → LLM → output) before writing code |
+| **Build** | Python 3.11 + Streamlit, shared logic in `shared/` |
+| **Integrate** | Bring-your-own-key — API keys stay in your browser session |
+| **Ship** | GitHub → Streamlit Community Cloud auto-deploy |
+| **Tooling** | Cursor with the latest model |
 
 ### Apps in this portfolio
 
-#### 🧠 Concept Explainer *(live)*
+→ **Concept Explainer** — multi-audience AI tutor (live)  
+→ **Abhishek Jain** — builder profile & projects at [iamabyjain.com](https://iamabyjain.com)
 
-Multi-audience tutor for any concept or keyword (e.g. NLP, RAG, agentic workflows).
+#### 🔜 Coming next
 
-- Validate **OpenAI** or **Claude** API keys with a real request
-- List available models with **reference pricing**
-- Explain for **SMEs**, **domain experts**, and **technical practitioners**
-- Analogies + business impact + technical depth
-- Follow-up chat and **download conversation** as text
-
-→ Open **Concept Explainer** from the sidebar.
-
-#### 🔜 Coming next (course roadmap)
-
-| Module theme | Planned app |
-|--------------|-------------|
-| LangChain agents | Tool-calling agent with trace viewer |
-| Multi-agent systems | Orchestrator demo (sequential & parallel) |
+| Module | Planned app |
+|--------|-------------|
+| LangChain agents | Tool-calling agent + trace viewer |
+| Multi-agent systems | Sequential & parallel orchestrator |
 | LangGraph / AutoGen | Workflow builder with state diagram |
-| Monitoring & observability | Agent run log + cost/latency dashboard |
-
-Each new module adds a page here as it ships.
+| Observability | Agent run log + cost/latency dashboard |
 """
 )
 
-col1, col2, col3 = st.columns(3)
-with col1:
+c1, c2, c3 = st.columns(3)
+with c1:
     st.metric("Platform", "Streamlit")
-with col2:
+with c2:
     st.metric("Python", "3.11")
-with col3:
+with c3:
     st.metric("Live apps", "1")
 
 st.divider()
 st.caption(
-    "Built by Abhishek Jain as part of Assignment on 23rd August 2026 "
-    "on Cursor using the latest model."
+    "Built by [Abhishek Jain](https://iamabyjain.com) · Assignment · 23 August 2026 · Cursor"
 )
